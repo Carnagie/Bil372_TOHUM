@@ -19,3 +19,6 @@ workflows:
   main:
     jobs:
       - build-and-test
+  develop:
+    jobs:
+      - build-and-test
