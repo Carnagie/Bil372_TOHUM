@@ -77,10 +77,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'tohum',
-        'USER': 'tohumadmin',
+        'USER': 'super',
         'PASSWORD': 'whqrnr&6mxAj7',
-        'HOST': 'Carnagie-1760.postgres.pythonanywhere-services.com',
-        'PORT': '11760',
+        'HOST': 'Tohum-1871.postgres.pythonanywhere-services.com',
+        'PORT': '11871',
     }
 }
 
