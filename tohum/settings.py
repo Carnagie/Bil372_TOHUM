@@ -79,11 +79,15 @@ DATABASES = {
         'NAME': 'tohum',
         'USER': 'super',
         'PASSWORD': 'whqrnr&6mxAj7',
-        'HOST': 'Tohum-1871.postgres.pythonanywhere-services.com',
-        'PORT': '11871',
+        'HOST': 'localhost',
+        'PORT': '9999',
     }
 }
 
+"""
+        'HOST': 'Tohum-1871.postgres.pythonanywhere-services.com',
+        'PORT': '11871',
+"""
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
