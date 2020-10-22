@@ -1,4 +1,4 @@
-![tohum_logo](/documents/resources/tohum_logo.jpg)
+![tohum_logo](/resources/tohum_logo.jpg)
 
    [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
    [![CircleCI](https://circleci.com/gh/bil372-tohum/Bil372_TOHUM.svg?style=svg&circle-token=5a094cf121f05a8333ef0038fe7f8341bb2dd185)](https://circleci.com/gh/bil372-tohum/Bil372_TOHUM)
