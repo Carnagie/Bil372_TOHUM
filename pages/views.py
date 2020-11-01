@@ -6,7 +6,7 @@ def home_view(request ,*args, **kwargs):
 	print(request)
 	data_dict = {
 	"user_name":"bahad",
-	"user_data_example": [1, 2, 3, 4]
+	"label": ["adana","izmir","ankara","muğla","kırıkkale","şanlı urfa","antalya","ığdır","tekirdağ","kars"]
 	}
 	return render(request, "index.html", data_dict)
 

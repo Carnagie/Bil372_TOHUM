@@ -54,18 +54,16 @@ margin-bottom: 0px
     background-color: #75C5B8;
 }
 .navbar-top-links > li > a {
-color: #FFFFFF;
+    color: white; 
 }
 .nav > li > a {
 padding: 20px 15px;
 }
-
 #side-menu {
-    background-color:rgba(217, 217, 217, 1);
+    background-color:rgba(227, 227, 227, 1);
 }
-
  #side-menu a {
-           color: rgba(82, 82, 82, 1);
+           color: black;
            font-size: 18px;
            height: 55px;
         }
