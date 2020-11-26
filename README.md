@@ -20,7 +20,7 @@ Hayvancılık, işlenen toprak, tarımda kullanılan aletler, iş gücü ve çev
 <h4> Kullanılan Teknolojiler </h4>
 <ul>
 <li>Python 3.8</li> 
-<li>Django 3.1</li>
+<li>Flask 3.1</li>
 <li>PostgreSQL</li>
 <li>Javascript</li>
 <li>HTML/CSS</li>
