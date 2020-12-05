@@ -5,6 +5,10 @@ app = Flask(__name__)
 app.secret_key = "hello"
 
 """
+!!! open ssh first, without ssh below code will not work !!!
+
+$ ssh -o "ServerAliveInterval 60" -4 -L 9999:Tohum-1871.postgres.pythonanywhere-services.com:11871 Tohum@ssh.pythonanywhere.com
+
 secure database useage pattern (DO NOT USE 1 CONNECTION FOR MORE THAN ONE EXECUTION)
 con = psycopg2.connect(host="localhost", port="9999", database="tohum", user="super", password="whqrnr&6mxAj7")
 cur = con.cursor()
@@ -15,6 +19,7 @@ cur.commit()
 cur.fetchall()
 
 cur.close()
+con.commit()
 con.close()
 """
 
