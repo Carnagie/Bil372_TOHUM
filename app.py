@@ -1,9 +1,22 @@
 from flask import Flask, render_template, url_for, redirect, request, session
-#import psycopg2
+import psycopg2
 
 app = Flask(__name__)
 app.secret_key = "hello"
-#con = psycopg2.connect(host="localhost", port="5432", database="tohum", user="postgres", password="147369")
+
+"""
+secure database useage pattern (DO NOT USE 1 CONNECTION FOR MORE THAN ONE EXECUTION)
+con = psycopg2.connect(host="localhost", port="9999", database="tohum", user="super", password="whqrnr&6mxAj7")
+cur = con.cursor()
+cur.execute(<your sql string>)
+cur.commit()
+
+//optional if you try to get table data
+cur.fetchall()
+
+cur.close()
+con.close()
+"""
 
 @app.route('/')
 def homepage():
