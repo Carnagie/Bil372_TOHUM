@@ -6,19 +6,74 @@ app.secret_key = "hello"
 con = psycopg2.connect(host="localhost", port="9999", database="tohum", user="super", password="whqrnr&6mxAj7")
 
 
-
-
 @app.route('/', methods=["GET","POST"])
 def index():
+    if "admin" in session or "user" in session:
+        return render_template('index.html',data="T")
+    else:
+        return render_template('index.html',data="F")
 
-    return render_template('index.html')
+@app.route('/admin',methods=["POST","GET"])
+def admin():
+    if "admin" not in session:
+        return redirect(url_for("login"))
+    else:
+        return "admin sayfasi"
 
-
+@app.route('/user', methods=["POST","GET"])
+def user():
+    if "user" in session:
+        user = session["user"]
+        return "user sayfasi"
+    else:
+        return redirect(url_for("login"))
 
 @app.route('/login',methods=["POST","GET"])
 def login():
 
-    return render_template('login.html')
+    if "admin" in session:
+        return redirect(url_for("admin"))
+
+    elif "user" in session:
+        return redirect(url_for("user"))
+
+    else:
+        if request.method == "POST":
+
+            cur = con.cursor()
+            email = request.form["email"]
+            password = request.form["password"]
+            cur.execute("select ciftcipassword from ciftci where ciftcimail='{}'".format(email))
+            truePassword = cur.fetchone()
+            con.commit()
+            cur.close()
+
+            if email == "admin@admin.com" and password == "admin":
+                session["admin"] = "admin"
+                return redirect(url_for("admin"))
+
+            if truePassword == None:
+                return redirect(url_for("login"))
+
+            else:
+                if password == truePassword[0].__str__():
+                    session["user"] = "user"
+                    return redirect(url_for("user"))
+                else:
+                    return redirect(url_for("login"))
+
+
+
+        else:
+            if "user" in session:
+                return redirect(url_for("user"))
+            return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop("admin", None)
+    session.pop("user", None)
+    return redirect(url_for("login"))
 
 @app.route('/register', methods=["POST","GET"])
 def register():

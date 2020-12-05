@@ -187,8 +187,20 @@
                 </li>
             </ul>
             <div class="btn-box w-100 mt-4 mb-1">
-                <button type="button" class="btn mb-2 btn-primary btn-lg btn-block" onclick="location.href = '/login'">
-                    <i class="fe fe-shopping-cart fe-12 mr-2"></i><span class="small">Sign In Now</span>
+                <button type="button" id="login-btn" class="btn mb-2 btn-primary btn-lg btn-block" onclick="myFunction()">
+                    {% block content %}
+                        {% if data == "T" %}
+                            <i class="fe fe-shopping-cart fe-12 mr-2"></i><span class="small">Sign Out</span>
+                            <script>
+                                function myFunction(){ location.href = '/logout'; }
+                            </script>
+                        {% else %}
+                            <i class="fe fe-shopping-cart fe-12 mr-2"></i><span class="small">Sign In Now</span>
+                            <script>
+                                function myFunction(){ location.href = '/login'; }
+                            </script>
+                        {% endif %}
+                    {% endblock content %}
                 </button>
             </div>
         </nav>
