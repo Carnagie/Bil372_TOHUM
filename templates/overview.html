@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="../static/img/favicon.png">
-    <title>Fruits</title>
+    <title>Overview</title>
     <!-- Simple bar CSS -->
     <link rel="stylesheet" href="../static/css/simplebar.css">
     <!-- Fonts CSS -->
@@ -66,6 +66,7 @@
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                     <a class="dropdown-item" href="/profile/overview">Profile</a>
                     <a class="dropdown-item" href="/profile/settings">Settings</a>
+                    <a class="dropdown-item" href="/profile/activities">Activities</a>
                 </div>
             </li>
         </ul>
@@ -108,20 +109,20 @@
                     </a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a href="/profile/tips" aria-expanded="false" class="dropdown-toggle nav-link">
+                    <a href="/user/tips" aria-expanded="false" class="dropdown-toggle nav-link">
                         <em class="fe fe-droplet fe-16"></em>
                         <span class="ml-3 item-text">Tips</span>
                     </a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a href="/profile/data" aria-expanded="false"
+                    <a href="/user/product"  aria-expanded="false"
                        class="dropdown-toggle nav-link">
                         <em class="fe fe-plus-circle fe-16"></em>
                         <span class="ml-3 item-text">Add Product</span>
                     </a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a href="/profile/settings" data-toggle="collapse" aria-expanded="false"
+                    <a href="/profile/settings"  aria-expanded="false"
                        class="dropdown-toggle nav-link">
                         <em class="fe fe-settings fe-16"></em>
                         <span class="ml-3 item-text">Settings</span>
@@ -190,6 +191,7 @@
                         }
                     </script>
 
+
                 </button>
             </div>
         </nav>
@@ -198,128 +200,105 @@
         <div class="container-fluid">
             <div class="row justify-content-center">
                 <div class="col-12">
-
-                </div>
-                <div class="mb-2 align-items-center">
-                    <div class="card shadow mb-4">
-                        <div class="card-body">
-                            <div class="container-11">
-                                <img src="../static/img/fruits.jpg" width="100%" style="opacity: 50%" alt="img">
-                                <div class="centered "><h2 class="welcome-text">Fruits</h2></div>
+                    <h2 class="h3 mb-4 page-title">Profile</h2>
+                    <div class="row mt-5 align-items-center">
+                        <div class="col-md-3 text-center mb-5">
+                            <div class="avatar avatar-xl">
+                                <img src="../static/img/user.png" alt="..." class="avatar-img rounded-circle">
                             </div>
-                        </div> <!-- .card-body -->
-                    </div> <!-- .card -->
-                </div>
-            </div> <!-- .col-12 -->
-        </div> <!-- .row -->
-        <div class="card-body">
-            <form class="row" method="post" action="#">
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label for="name">Name</label>
-                        <input type="text" id="name" name="name" class="form-control">
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="opposite">Opposite Name</label>
-                        <input type="text" id="opposite" name="opposite" class="form-control">
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="area">Area (greater than)</label>
-                        <input type="text" id="area" name="area" class="form-control">
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="ton">Ton (greater than)</label>
-                        <input type="text" id="ton" name="ton" class="form-control">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label for="region">Region</label>
-                        <select name="region" id="region" class="form-control">
-                            <option value=""></option>
-                            <option value="1">Marmara Bölgesi</option>
-                            <option value="2">Ege Bölgesi</option>
-                            <option value="3">Akdeniz Bölgesi</option>
-                            <option value="4">İç Anadolu Bölgesi</option>
-                            <option value="5">Karadeniz Bölgesi</option>
-                            <option value="6">Doğu Anadolu Bölgesi</option>
-                            <option value="7">Güneydoğu Anadolu Bölgesi</option>
-                        </select>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="year">Year</label>
-                        <input type="text" id="year" name="year" class="form-control">
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="coefficient">Coefficient</label>
-                        <input type="text" id="coefficient" name="coefficient" class="form-control">
-                    </div>
-                    <div class="form-group mb-3">
-                        <label>Search</label>
-                        <input type="submit" id="btnSearch" name="btnSearch" class="btn btn-primary w-100"
-                               value="Search">
-                    </div>
-                </div>
-            </form>
-        </div>
+                        </div>
+                        <div class="col">
+                            <div class="row align-items-center">
+                                <div class="col-md-7">
+                                    <h2 class="mb-1">Ekrem, Sönmezer</h2>
+                                    <p class="small mb-3"><span class="badge badge-dark">Ankara, Türkiye</span></p>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-md-7">
+                                    <p class="text-muted"></p>
+                                </div>
 
-        <!-- simple table -->
-        <div class="col-md-12 my-4">
-            <div class="card shadow">
-                <div class="card-body">
-                    <h5 class="card-title">Search Results</h5>
-                    <p class="card-text">With your filter these data is found</p>
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Coefficient</th>
-                            <th>Grown Region</th>
-                            <th>Area</th>
-                            <th>Ton</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>Elma</td>
-                            <td>+7</td>
-                            <td>İç Anadolu Bölgesi</td>
-                            <td>24000</td>
-                            <td>16586245</td>
-                        </tr>
-                        <tr>
-                            <td>Portakal</td>
-                            <td>+19</td>
-                            <td>Akdeniz Bölgesi</td>
-                            <td>14963</td>
-                            <td>492192</td>
-                        </tr>
-                        <tr>
-                            <td>Üzüm</td>
-                            <td>-4</td>
-                            <td>Ege Bölgesi</td>
-                            <td>25963</td>
-                            <td>2397295</td>
-                        </tr>
-                        <tr>
-                            <td>Şeftali</td>
-                            <td>-21</td>
-                            <td>Marmara Bölgesi</td>
-                            <td>122682</td>
-                            <td>2786427</td>
-                        </tr>
-                        <tr>
-                            <td>Armut</td>
-                            <td>-34</td>
-                            <td>Ege Bölgesi</td>
-                            <td>123549</td>
-                            <td>169273987</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div> <!-- simple table -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row my-4">
+                        <div class="col-md-4">
+                            <div class="card mb-4 shadow">
+                                <div class="card-body my-n3">
+                                    <div class="row align-items-center">
+                                        <div class="col-3 text-center">
+                          <span class="circle circle-lg bg-light">
+                            <i class="fe fe-coffee fe-24 text-primary"></i>
+                          </span>
+                                        </div> <!-- .col -->
+                                        <div class="col">
+                                            <a href="#">
+                                                <h3 class="h5 mt-4 mb-1">Tips</h3>
+                                            </a>
+                                            <p class="text-muted">Get tips about what you should do next for more
+                                                profit</p>
+                                        </div> <!-- .col -->
+                                    </div> <!-- .row -->
+                                </div> <!-- .card-body -->
+                                <div class="card-footer">
+                                    <a href="/profile/tips" class="d-flex justify-content-between text-muted"><span> Get Tips</span><i
+                                            class="fe fe-chevron-right"></i></a>
+                                </div> <!-- .card-footer -->
+                            </div> <!-- .card -->
+                        </div> <!-- .col-md-->
+                        <div class="col-md-4">
+                            <div class="card mb-4 shadow">
+                                <div class="card-body my-n3">
+                                    <div class="row align-items-center">
+                                        <div class="col-3 text-center">
+                          <span class="circle circle-lg bg-light">
+                            <i class="fe fe-edit-2 fe-24 text-primary"></i>
+                          </span>
+                                        </div> <!-- .col -->
+                                        <div class="col">
+                                            <a href="#">
+                                                <h3 class="h5 mt-4 mb-1">New Data</h3>
+                                            </a>
+                                            <p class="text-muted">Add new data with product, area, ton and other
+                                                information</p>
+                                        </div> <!-- .col -->
+                                    </div> <!-- .row -->
+                                </div> <!-- .card-body -->
+                                <div class="card-footer">
+                                    <a href="/profile/data" class="d-flex justify-content-between text-muted"><span>Add New Data</span><i
+                                            class="fe fe-chevron-right"></i></a>
+                                </div> <!-- .card-footer -->
+                            </div> <!-- .card -->
+                        </div> <!-- .col-md-->
+                        <div class="col-md-4">
+                            <div class="card mb-4 shadow">
+                                <div class="card-body my-n3">
+                                    <div class="row align-items-center">
+                                        <div class="col-3 text-center">
+                          <span class="circle circle-lg bg-light">
+                            <i class="fe fe-sliders fe-24 text-primary"></i>
+                          </span>
+                                        </div> <!-- .col -->
+                                        <div class="col">
+                                            <a href="#">
+                                                <h3 class="h5 mt-4 mb-1">Settings</h3>
+                                            </a>
+                                            <p class="text-muted">Show and edit your personal information</p>
+                                        </div> <!-- .col -->
+                                    </div> <!-- .row -->
+                                </div> <!-- .card-body -->
+                                <div class="card-footer">
+                                    <a href="/profile/settings" class="d-flex justify-content-between text-muted"><span>Information Settings</span><i
+                                            class="fe fe-chevron-right"></i></a>
+                                </div> <!-- .card-footer -->
+                            </div> <!-- .card -->
+                        </div> <!-- .col-md-->
+                    </div> <!-- .row-->
+
+                </div> <!-- /.col-12 -->
+            </div> <!-- .row -->
+        </div> <!-- .container-fluid -->
 
     </main> <!-- main -->
 </div> <!-- .wrapper -->

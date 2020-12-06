@@ -172,6 +172,22 @@ def legumes():
     else:
         return render_template('legumes.html')
 
+@app.route('/profile/overview', methods=["POST", "GET"])
+def overview():
+
+    if "user" not in session and "admin" not in session:
+        return redirect(url_for("login"))
+    else:
+        return render_template('overview.html')
+
+@app.route('/profile/settings', methods=["POST", "GET"])
+def settings():
+
+    if "user" not in session and "admin" not in session:
+        return redirect(url_for("login"))
+    else:
+        return render_template('settings.html')
+
 @app.errorhandler(404)
 def page_not_found(e):
     # note that we set the 404 status explicitly
