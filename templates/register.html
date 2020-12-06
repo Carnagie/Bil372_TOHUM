@@ -75,20 +75,17 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">
-                    <label for="firstname">Country</label>
-                    <input type="text" id="country" class="form-control" name="country">
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="lastname">Region</label>
-                    <input type="text" id="region" class="form-control" name="region">
-                </div>
-                <div class="form-group col-md-3">
                     <label for="lastname">City</label>
-                    <input type="text" id="city" class="form-control" name="city">
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="lastname">District</label>
-                    <input type=" " id="district" class="form-control" name="district">
+
+                    <select id="city" name="city" class="form-control">
+                        {% for city in cities | sort(attribute=1)%}
+                        <option value="{{city[2]}}">
+                            {{city[2]}}
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    <!--<input type="text" id="city" class="form-control" name="city">-->
                 </div>
             </div>
             <hr class="my-4">
@@ -116,7 +113,7 @@
                 </div>
             </div>
             <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
-            <p class="mt-4 mb-2"><a class="signup" href="/login">Have an account? Sign up now</a></p>
+            <p class="mt-4 mb-2"><a class="signup" href="/login">Have an account? Login now</a></p>
         </form>
     </div>
 </div>
