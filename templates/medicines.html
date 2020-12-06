@@ -25,6 +25,7 @@
     <!-- App CSS -->
     <link rel="stylesheet" href="../static/css/app-light.css" id="lightTheme">
     <link rel="stylesheet" href="../static/css/app-dark.css" id="darkTheme" disabled>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
     <style>
         .container-11 {
             position: relative;
@@ -214,17 +215,9 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
-
                     <div class="form-group mb-3">
-                        <label for="name">Name</label>
-                        <input type="text" id="name" name="name" class="form-control">
-                    </div>
-
-                </div> <!-- /.col -->
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label for="region">Region</label>
-                        <select name="region" id="region" class="form-control">
+                        <label for="region">Start Date</label>
+                        <select name="start" id="start" class="form-control">
                             <option value="2020">2020</option>
                             <option value="2019">2019</option>
                             <option value="2018">2018</option>
@@ -260,6 +253,52 @@
                         </select>
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="region">End Date</label>
+                        <select name="start" id="start" class="form-control">
+                            <option value="2020">2020</option>
+                            <option value="2019">2019</option>
+                            <option value="2018">2018</option>
+                            <option value="2017">2017</option>
+                            <option value="2016">2016</option>
+                            <option value="2015">2015</option>
+                            <option value="2014">2014</option>
+                            <option value="2013">2013</option>
+                            <option value="2012">2012</option>
+                            <option value="2011">2011</option>
+                            <option value="2010">2010</option>
+                            <option value="2009">2009</option>
+                            <option value="2008">2008</option>
+                            <option value="2007">2007</option>
+                            <option value="2006">2006</option>
+                            <option value="2005">2005</option>
+                            <option value="2004">2004</option>
+                            <option value="2003">2003</option>
+                            <option value="2002">2002</option>
+                            <option value="2001">2001</option>
+                            <option value="2000">2000</option>
+                            <option value="1999">1999</option>
+                            <option value="1998">1998</option>
+                            <option value="1997">1997</option>
+                            <option value="1996">1996</option>
+                            <option value="1995">1995</option>
+                            <option value="1994">1994</option>
+                            <option value="1993">1993</option>
+                            <option value="1992">1992</option>
+                            <option value="1991">1991</option>
+                            <option value="1990">1990</option>
+                            <option value="1989">1989</option>
+                        </select>
+                    </div>
+                </div>
+                </div>
+
+                    <div class="form-group mb-3" style="width: 50%;margin-left: 50%;">
+                        <label>Search</label>
+                        <input type="submit" id="btnSearch" name="btnSearch" class="btn btn-primary w-100" value="Search">
+
+                </div>
             </div>
         </div>
 
@@ -269,54 +308,37 @@
                 <div class="card-body">
                     <h5 class="card-title">Search Results</h5>
                     <p class="card-text">With your filter these data is found</p>
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Coefficient</th>
-                            <th>Grown Region</th>
-                            <th>Area</th>
-                            <th>Ton</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>Domates</td>
-                            <td>+7</td>
-                            <td>İç Anadolu Bölgesi</td>
-                            <td>24000</td>
-                            <td>16586245</td>
-                        </tr>
-                        <tr>
-                            <td>Salatalık</td>
-                            <td>+19</td>
-                            <td>Akdeniz Bölgesi</td>
-                            <td>14963</td>
-                            <td>492192</td>
-                        </tr>
-                        <tr>
-                            <td>Biber</td>
-                            <td>-4</td>
-                            <td>Ege Bölgesi</td>
-                            <td>25963</td>
-                            <td>2397295</td>
-                        </tr>
-                        <tr>
-                            <td>Patlıcan</td>
-                            <td>-21</td>
-                            <td>Marmara Bölgesi</td>
-                            <td>122682</td>
-                            <td>2786427</td>
-                        </tr>
-                        <tr>
-                            <td>Kabak</td>
-                            <td>-34</td>
-                            <td>Ege Bölgesi</td>
-                            <td>123549</td>
-                            <td>169273987</td>
-                        </tr>
-                        </tbody>
-                    </table>
+
+
+                    <canvas id="bar-chart" width="800" height="250"></canvas>
+
+                    <script type="text/javascript">
+                        // Bar chart
+                        new Chart(document.getElementById("bar-chart"), {
+                            type: 'bar',
+                            data: {
+                              labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
+                              datasets: [
+                                {
+                                  label: "Population (millions)",
+                                  backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+                                  data: [2478,5267,734,784,433]
+                                }
+                              ]
+                            },
+                            options: {
+                              legend: { display: false },
+                              title: {
+                                display: true,
+                                text: 'Predicted world population (millions) in 2050'
+                              }
+                            }
+                        });
+                    </script>
+
+
+
+
                 </div>
             </div>
         </div> <!-- simple table -->

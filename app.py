@@ -3,8 +3,8 @@ import psycopg2
 
 app = Flask(__name__)
 app.secret_key = "hello"
-con = psycopg2.connect(host="localhost", port="9999", database="tohumdb", user="super", password="whqrnr&6mxAj7")
-
+#con = psycopg2.connect(host="localhost", port="9999", database="tohumdb", user="super", password="whqrnr&6mxAj7")
+con = psycopg2.connect(host="localhost", port="5432", database="tohumdb", user="postgres", password="facethest0rm")
 
 @app.route('/', methods=["GET","POST"])
 def index():
@@ -179,6 +179,20 @@ def vegatables():
     if "user" not in session and "admin" not in session:
         return redirect(url_for("login"))
     else:
+        cur = con.cursor()
+        cur.execute("SELECT * FROM tohumschema.data")
+        data = cur.fetchall()
+        con.commit()
+        cur.close()
+
+
+        print(data)
+
+
+
+
+
+
         return render_template('vegetables.html')
 
 @app.route('/grains', methods=["POST","GET"])
