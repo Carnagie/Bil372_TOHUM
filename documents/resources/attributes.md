@@ -1,1 +1,0 @@
-[<a href='https://www.freepik.com/vectors/leaf'>Leaf vector created by freepik - www.freepik.com</a>]()
