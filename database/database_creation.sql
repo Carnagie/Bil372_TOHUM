@@ -1,6 +1,6 @@
 CREATE SCHEMA tohumschema;
 
-SET search_path TO tohumschema1;
+SET search_path TO tohumschema;
 
 CREATE TABLE region
 (
