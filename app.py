@@ -26,10 +26,25 @@ def register():
 
     return render_template('register.html')
 
-@app.route('/fruits', methods=["GET"])
+@app.route('/fruits', methods=["POST","GET"])
 def fruits():
 
     return render_template('fruits.html')
+
+@app.route('/vegetables', methods=["POST","GET"])
+def vegatables():
+
+    return render_template('vegetables.html')
+
+@app.route('/grains', methods=["POST","GET"])
+def grains():
+
+    return render_template('grains.html')
+
+@app.route('/legumes', methods=["POST","GET"])
+def legumes():
+
+    return render_template('legumes.html')
 
 
 @app.errorhandler(404)
