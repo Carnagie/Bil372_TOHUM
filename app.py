@@ -43,14 +43,15 @@ def login():
             cur = con.cursor()
             email = request.form["email"]
             password = request.form["password"]
-            cur.execute("select ciftcipassword from ciftci where ciftcimail='{}'".format(email))
-            truePassword = cur.fetchone()
-            con.commit()
-            cur.close()
 
             if email == "admin@admin.com" and password == "admin":
                 session["admin"] = "admin"
                 return redirect(url_for("admin"))
+
+            cur.execute("select ciftcipassword from ciftci where ciftcimail='{}'".format(email))
+            truePassword = cur.fetchone()
+            con.commit()
+            cur.close()
 
             if truePassword == None:
                 return redirect(url_for("login"))
@@ -126,25 +127,45 @@ def fruits():
             coefficient = request.form["coefficient"]
             ton = request.form["ton"]
             cur = con.cursor()
-            if name == None and region == None and opposite == None and year == None and area == None and coefficient == None and ton == None:
-                cur.execute("select * from product where type=1")
+
+            if name == "" and region == "" and opposite == "" and year == "" and area == "" and coefficient == "" and ton == "":
+                cur.execute("select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1")
             elif name:
-                cur.execute("select * from product where type=1 and name='{}'".format(name))
+                cur.execute("select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and name='{}'".format(name))
             elif region:
-                cur.execute("select * from product where type=1 and regionid=(select regionid from region where regionname='{}')".format(region))
-            #elif opposite:
-            #    cur.execute("select * from product where type=1 and name='{}'".format(opposite))
+                cur.execute("select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and r.regionid=(select regionid from tohumschema.region where regionname='{}')".format(region))
+            elif opposite:
+                cur.execute("select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and p.productid=(select oppositeproductid from tohumschema.opposite where productid=(select productid from tohumschema.product where name='{}'))".format(opposite))
+            elif year:
+                cur.execute("select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and p.productid=(select productid from tohumschema.productdata where year={})".format(year))
+            elif area:
+                cur.execute("select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and p.productid=(select productid from tohumschema.productdata where area>{})".format(int(area)))
+            elif coefficient:
+                cur.execute("select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and p.coefficient={}".format(int(coefficient)))
+            elif  ton:
+                cur.execute("select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and p.productid=(select productid from tohumschema.productdata where ton>{})".format(int(ton)))
+
+            data = None
             try:
                 data = cur.fetchall()
                 print(data)
             except:
                 print("no fetch")
             cur.close()
-            return redirect(url_for("fruits"))
+
+            return render_template('fruits.html',data=data)
 
         else:
-            return render_template('fruits.html')
-
+            cur = con.cursor()
+            #cur.execute("select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1")
+            cur.execute("select * from tohumschema.product where type=1")
+            x = cur.fetchall()
+            cur.close()
+            if x:
+                return render_template('fruits.html', data=x)
+            else:
+                #hicbir data yoksa en basta
+                return render_template('fruits.html', data=[-1,-1,-1,-1,-1])
 @app.route('/vegetables', methods=["POST","GET"])
 def vegatables():
 
