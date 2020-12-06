@@ -44,7 +44,7 @@
 <body class="light ">
 <div class="wrapper vh-100">
     <div class="row align-items-center h-100">
-        <form class="col-lg-6 col-md-8 col-10 mx-auto">
+        <form class="col-lg-6 col-md-8 col-10 mx-auto" method="post" action="#">
             <div class="mx-auto text-center my-4">
                 <a class="navbar-brand mx-auto mt-2 flex-fill text-center" href="./index.html">
                     <svg version="1.1" id="logo" class="navbar-brand-img brand-md" xmlns="http://www.w3.org/2000/svg"
@@ -60,8 +60,8 @@
                 <h2 class="my-3">Sign Up</h2>
             </div>
             <div class="form-group">
-                <label for="inputEmail4">Username</label>
-                <input type="text" class="form-control" id="inputEmail4" name="username">
+                <label for="inputEmail4">Email</label>
+                <input type="email" class="form-control" id="inputEmail4" name="email">
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
@@ -75,20 +75,17 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">
-                    <label for="firstname">Country</label>
-                    <input type="text" id="country" class="form-control" name="country">
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="lastname">Region</label>
-                    <input type="text" id="region" class="form-control" name="region">
-                </div>
-                <div class="form-group col-md-3">
                     <label for="lastname">City</label>
-                    <input type="text" id="city" class="form-control" name="city">
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="lastname">District</label>
-                    <input type=" " id="district" class="form-control" name="district">
+
+                    <select id="city" name="city" class="form-control">
+                        {% for city in cities | sort(attribute=1)%}
+                        <option value="{{city[2]}}">
+                            {{city[2]}}
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    <!--<input type="text" id="city" class="form-control" name="city">-->
                 </div>
             </div>
             <hr class="my-4">
@@ -96,11 +93,11 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="inputPassword5">New Password</label>
-                        <input type="password" class="form-control" id="inputPassword5">
+                        <input type="password" class="form-control" id="inputPassword5" name="first_password">
                     </div>
                     <div class="form-group">
                         <label for="inputPassword6">Confirm Password</label>
-                        <input type="password" class="form-control" id="inputPassword6">
+                        <input type="password" class="form-control" id="inputPassword6" name="second_password">
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -116,7 +113,7 @@
                 </div>
             </div>
             <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
-            <p class="mt-4 mb-2"><a class="signup" href="/login">Have an account? Sign up now</a></p>
+            <p class="mt-4 mb-2"><a class="signup" href="/login">Have an account? Login now</a></p>
         </form>
     </div>
 </div>
