@@ -4,7 +4,7 @@ import psycopg2
 app = Flask(__name__)
 app.secret_key = "hello"
 con = psycopg2.connect(host="localhost", port="9999", database="tohumdb", user="super", password="whqrnr&6mxAj7")
-
+#con = psycopg2.connect(host="localhost", port="5432", database="tohumdb", user="postgres", password="facethest0rm")
 
 @app.route('/', methods=["GET","POST"])
 def index():
@@ -43,7 +43,7 @@ def login():
             cur = con.cursor()
             email = request.form["email"]
             password = request.form["password"]
-            cur.execute("select ciftcipassword from ciftci where ciftcimail='{}'".format(email))
+            cur.execute("select password from tohumschema.farmer where mail='{}'".format(email))
             truePassword = cur.fetchone()
             con.commit()
             cur.close()
@@ -62,8 +62,6 @@ def login():
                 else:
                     return redirect(url_for("login"))
 
-
-
         else:
             if "user" in session:
                 return redirect(url_for("user"))
@@ -78,38 +76,44 @@ def logout():
 @app.route('/register', methods=["POST","GET"])
 def register():
 
+    cur = con.cursor()
+    cur.execute("SELECT * FROM tohumschema.city;")
+    cities = cur.fetchall()
+    cur.close()
+
+    
     if request.method == "POST":
+
         email = request.form["email"]
         first_name = request.form["firstname"]
         last_name = request.form["lastname"]
-        country = request.form["country"]
-        region = request.form["region"]
         city = request.form["city"]
-        district = request.form["district"]
+        for i in cities:
+            if city == i[2]:
+                city = i[1]
+                break
         first_password = request.form["first_password"]
         second_password = request.form["second_password"]
 
         cur = con.cursor()
-        cur.execute("select * from ciftci where ciftcimail='{}'".format(email))
+        cur.execute("select * from tohumschema.farmer where mail='{}'".format(email))
         ret = cur.fetchall()
         if ret or first_password != second_password:
             print("hata mesaji")
             return redirect(url_for("register"))
         else:
             print("kaydolabilir")
-            cur.execute("insert into ciftci (ciftcifname, ciftcilname, ciftcimail, ciftcipassword) values(%s, %s, %s, %s)", (first_name,last_name, email, first_password))
-            cur.execute("select ciftciid from ciftci where ciftcimail='{}'".format(email))
-            ciftciID = cur.fetchone()[0]
+            cur.execute("INSERT into tohumschema.farmer ( mail, name, lastname, password, cityid) values(%s, %s, %s, %s, %s)", (email,first_name,last_name, first_password, city))
+            cur.execute("SELECT farmerid from tohumschema.farmer where mail='{}'".format(email))
+            farmerID = cur.fetchone()[0]
             con.commit()
-            #cur.execute("select ilceid from ")
-            print(ciftciID)
-            #TODO @carnagie insert to ilce bolge...
         cur.close()
 
         return redirect(url_for("register"))
 
     else:
-        return render_template('register.html')
+        return render_template('register.html',cities=cities)
+
 
 @app.route('/fruits', methods=["POST","GET"])
 def fruits():
