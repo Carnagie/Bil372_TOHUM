@@ -1,0 +1,96 @@
+﻿ID,UrunAdı,Katsayı
+1,Taze Fasülye,34
+2,Barbunya,19
+3,Bezelye,72
+4,Börülce,63
+5,Bakla,43
+6,Kuşkonmaz,49
+7,Beyaz Lahana,13
+8,Kırmızı Lahana,26
+9,Kara Lahana,80
+10,Brüksel Lahana,30
+11,Karnabahar,23
+12,Brokoli,62
+13,Kıvırcık Marul,46
+14,Göbekli Marul,8
+15,Iceberg Marul,23
+16,Ispanak,87
+17,Enginar,69
+18,Kereviz,64
+19,Pazı,28
+20,Semizotu,56
+21,Maydanoz,76
+22,Roka,90
+23,Tere,28
+24,Nane,79
+25,Dereotu,91
+26,Karpuz,35
+27,Kavun,75
+28,Salçalık Biber,23
+29,Dolmalık Biber ,81
+30,Sivri Biber,56
+31,Çekirdekli Üzüm,11
+32,Çekirdeksiz Üzüm,37
+33,Avokado,59
+34,Muz,41
+35,Yaş İncir,72
+36,Greyfurt,26
+37,Limon,21
+38,Portakal,40
+39,Mandalina,46
+40,Turunç,53
+41,Elma,89
+42,Armut,10
+43,Ayva,39
+44,Kasıyı,73
+45,Zerdali,51
+46,Kiraz,83
+47,Vişne,20
+48,Şeftali,28
+49,Nektarin,51
+50,Erik,30
+51,Yenidünya,56
+52,Kızılcık,35
+53,İğde,42
+54,Kivi,38
+55,Ahududu,21
+56,Çilek,61
+57,Böğürtlen,79
+58,Dut,77
+59,Badem,51
+60,Kestane,63
+61,Arpa Tanesi,75
+62,Buğday Tanesi,6
+63,Çavdar Tanesi,16
+64,Dinkel Buğdayı,66
+65,Karabuğday Tohumu,95
+66,Kavılca Buğdayı,77
+67,Horasan Buğdayı,52
+68,Karakılçık Buğdayı,33
+69,Kırmızı Buğday,69
+70,Sarı Buğday,16
+71,Kızılca Buğday,60
+72,Siyez Buğdayı,37
+73,Yulaf Tanesi,33
+74,Yulaf Ezmesi,87
+75,Arpa Ezmesi,78
+76,Çavdar Ezmesi,72
+77,Buğday Ezmesi,55
+78,Çiğ Kara B. Ezmesi,21
+79,Iza Buğday,96
+80,Kunduru Buğdayı,48
+81,Bulgur,16
+82,Yeşil Mercimek,20
+83,Şeker Fasülyesi,25
+84,Nohut,79
+85,Sarı Mercimek,68
+86,İrmik,38
+87,Bulgur,33
+88,Tel Şehriye,29
+89,Kuru Fasülye,30
+90,Pirinç,45
+91,Keten Tohumu,59
+92,Soya Fasülyesi,67
+93,Çavdar Ezmesi,25
+94,Esmer Bulgur,49
+95,Kinoa,78
