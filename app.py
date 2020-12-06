@@ -111,6 +111,22 @@ def register():
     else:
         return render_template('register.html')
 
+@app.route('/fruits', methods=["GET"])
+def fruits():
+
+    return render_template('fruits.html')
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    # note that we set the 404 status explicitly
+    return render_template('page-404.html'), 404
+
+@app.errorhandler(500)
+def page_not_found(e):
+    # note that we set the 500 status explicitly
+    return render_template('page-500.html'), 500
+
 if __name__ == '__main__':
     app.run(debug=True)
 
