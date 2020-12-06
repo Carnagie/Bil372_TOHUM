@@ -197,6 +197,14 @@ def legumes():
     else:
         return render_template('legumes.html')
 
+@app.route('/medicines', methods=["POST","GET"])
+def medicines():
+
+    if "user" not in session and "admin" not in session:
+        return redirect(url_for("login"))
+    else:
+        return render_template('medicines.html')
+
 @app.route('/profile/overview', methods=["POST", "GET"])
 def overview():
 
