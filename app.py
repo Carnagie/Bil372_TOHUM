@@ -114,8 +114,10 @@ def register():
 @app.route('/fruits', methods=["GET"])
 def fruits():
 
-    return render_template('fruits.html')
-
+    if "user" not in session and "admin" not in session:
+        return redirect(url_for("login"))
+    else:
+        return render_template('fruits.html')
 
 @app.errorhandler(404)
 def page_not_found(e):
