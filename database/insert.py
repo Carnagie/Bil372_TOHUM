@@ -3,8 +3,8 @@ import psycopg2
 from csv import reader
 
 
-con = psycopg2.connect(host="localhost", port="5432", database="tohumdb", user="postgres", password="facethest0rm")
-#con = psycopg2.connect(host="localhost", port="9999", database="tohumdb", user="super", password="whqrnr&6mxAj7")
+#con = psycopg2.connect(host="localhost", port="5432", database="tohumdb", user="postgres", password="facethest0rm")
+con = psycopg2.connect(host="localhost", port="9999", database="tohumdb", user="super", password="whqrnr&6mxAj7")
 
 cur = con.cursor()
 
@@ -25,8 +25,6 @@ cur.close()
 con.commit()
 con.close()
 """
-
-
 """
 with open('city.csv', 'r') as read_obj:
     # pass the file object to reader() to get the reader object
@@ -44,3 +42,4 @@ cur.close()
 con.commit()
 con.close()
 """
+
