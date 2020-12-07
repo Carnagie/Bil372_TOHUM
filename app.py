@@ -217,14 +217,14 @@ def fruits():
 
             if name == "" and region == "" and opposite == "" and year == "" and area == "" and coefficient == "" and ton == "":
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1")
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 group by p.name, p.coefficient, r.regionname, p.productid")
             elif name:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and name='{}'".format(
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and name='{}' group by p.name, p.coefficient, r.regionname, p.productid".format(
                         name))
             elif region:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and r.regionid={}".format(
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and r.regionid={} group by p.name, p.coefficient, r.regionname, p.productid".format(
                         region))
             elif opposite:
                 cur.execute(
@@ -232,19 +232,19 @@ def fruits():
                         opposite))
             elif year:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and pd.year={}".format(
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and pd.year={} group by p.name, p.coefficient, r.regionname, p.productid".format(
                         year))
             elif area:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and pd.area>{}".format(
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 group by p.name, p.coefficient, r.regionname, p.productid having sum(pd.area)>{}".format(
                         int(area)))
             elif coefficient:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and p.coefficient={}".format(
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and p.coefficient={} group by p.name, p.coefficient, r.regionname, p.productid".format(
                         int(coefficient)))
             elif ton:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and pd.ton>{}".format(
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 group by p.name, p.coefficient, r.regionname, p.productid having sum(pd.ton)>{}".format(
                         int(ton)))
 
             data = None
@@ -260,7 +260,7 @@ def fruits():
         else:
             cur = con.cursor()
             cur.execute(
-                "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1")
+                "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 group by p.name, p.coefficient, r.regionname, p.productid")
             x = cur.fetchall()
             cur.close()
             if x:
@@ -287,14 +287,14 @@ def vegatables():
 
             if name == "" and region == "" and opposite == "" and year == "" and area == "" and coefficient == "" and ton == "":
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=2")
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=2 group by p.name, p.coefficient, r.regionname, p.productid")
             elif name:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=2 and name='{}'".format(
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=2 and name='{}' group by p.name, p.coefficient, r.regionname, p.productid".format(
                         name))
             elif region:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=2 and r.regionid={}".format(
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=2 and r.regionid={} group by p.name, p.coefficient, r.regionname, p.productid".format(
                         region))
             elif opposite:
                 cur.execute(
@@ -302,19 +302,19 @@ def vegatables():
                         opposite))
             elif year:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=2 and pd.year={}".format(
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=2 and pd.year={} group by p.name, p.coefficient, r.regionname, p.productid".format(
                         year))
             elif area:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=2 and pd.area>{}".format(
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=2 group by p.name, p.coefficient, r.regionname, p.productid having sum(pd.area)>{}".format(
                         int(area)))
             elif coefficient:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=2 and p.coefficient={}".format(
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=2 and p.coefficient={} group by p.name, p.coefficient, r.regionname, p.productid".format(
                         int(coefficient)))
             elif ton:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=2 and pd.ton>{}".format(
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=2 group by p.name, p.coefficient, r.regionname, p.productid having sum(pd.ton)>{}".format(
                         int(ton)))
 
             data = None
@@ -330,7 +330,7 @@ def vegatables():
         else:
             cur = con.cursor()
             cur.execute(
-                "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=2")
+                "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=2 group by p.name, p.coefficient, r.regionname, p.productid")
             x = cur.fetchall()
             cur.close()
             if x:
@@ -357,14 +357,14 @@ def grains():
 
             if name == "" and region == "" and opposite == "" and year == "" and area == "" and coefficient == "" and ton == "":
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3")
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3 group by p.name, p.coefficient, r.regionname, p.productid")
             elif name:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3 and name='{}'".format(
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3 and name='{}' group by p.name, p.coefficient, r.regionname, p.productid".format(
                         name))
             elif region:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3 and r.regionid={}".format(
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3 and r.regionid={} group by p.name, p.coefficient, r.regionname, p.productid".format(
                         region))
             elif opposite:
                 cur.execute(
@@ -372,19 +372,19 @@ def grains():
                         opposite))
             elif year:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3 and pd.year={}".format(
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3 and pd.year={} group by p.name, p.coefficient, r.regionname, p.productid".format(
                         year))
             elif area:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3 and pd.area>{}".format(
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3 group by p.name, p.coefficient, r.regionname, p.productid having sum(pd.area)>{}".format(
                         int(area)))
             elif coefficient:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3 and p.coefficient={}".format(
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3 and p.coefficient={} group by p.name, p.coefficient, r.regionname, p.productid".format(
                         int(coefficient)))
             elif ton:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3 and pd.ton>{}".format(
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3 group by p.name, p.coefficient, r.regionname, p.productid having sum(pd.ton)>{}".format(
                         int(ton)))
 
             data = None
@@ -400,7 +400,7 @@ def grains():
         else:
             cur = con.cursor()
             cur.execute(
-                "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3")
+                "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3 group by p.name, p.coefficient, r.regionname, p.productid")
             x = cur.fetchall()
             cur.close()
             if x:
@@ -427,14 +427,14 @@ def legumes():
 
             if name == "" and region == "" and opposite == "" and year == "" and area == "" and coefficient == "" and ton == "":
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4")
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4 group by p.name, p.coefficient, r.regionname, p.productid")
             elif name:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4 and name='{}'".format(
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4 and name='{}' group by p.name, p.coefficient, r.regionname, p.productid".format(
                         name))
             elif region:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4 and r.regionid={}".format(
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4 and r.regionid={} group by p.name, p.coefficient, r.regionname, p.productid".format(
                         region))
             elif opposite:
                 cur.execute(
@@ -442,19 +442,19 @@ def legumes():
                         opposite))
             elif year:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4 and pd.year={}".format(
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4 and pd.year={} group by p.name, p.coefficient, r.regionname, p.productid".format(
                         year))
             elif area:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4 and pd.area>{}".format(
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4 group by p.name, p.coefficient, r.regionname, p.productid having sum(pd.area)>{}".format(
                         int(area)))
             elif coefficient:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4 and p.coefficient={}".format(
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4 and p.coefficient={} group by p.name, p.coefficient, r.regionname, p.productid".format(
                         int(coefficient)))
             elif ton:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4 and pd.ton>{}".format(
+                    "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4 group by p.name, p.coefficient, r.regionname, p.productid having sum(pd.ton)>{}".format(
                         int(ton)))
 
             data = None
@@ -470,7 +470,7 @@ def legumes():
         else:
             cur = con.cursor()
             cur.execute(
-                "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4")
+                "select p.name, p.coefficient, r.regionname, sum(pd.area), sum(pd.ton) from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4 group by p.name, p.coefficient, r.regionname, p.productid")
             x = cur.fetchall()
             cur.close()
             if x:
