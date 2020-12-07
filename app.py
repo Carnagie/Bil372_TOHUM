@@ -436,6 +436,64 @@ def medicines():
         return render_template('medicines.html', data=data, startdate=startdate, enddate=enddate)
 
 
+@app.route('/machines', methods=["POST", "GET"])
+def machines():
+    if "user" not in session and "admin" not in session:
+        return redirect(url_for("login"))
+    else:
+        startdate = -1
+        enddate = -1
+        cur = con.cursor()
+        cur.execute("SELECT  year, SUM(machineamount) FROM tohumschema.data GROUP BY year")
+        data = cur.fetchall()
+        con.commit()
+        cur.close()
+
+        if request.method == "POST":
+            startdate = request.form["start"]
+            enddate = request.form["end"]
+
+            cur = con.cursor()
+            cur.execute("SELECT  year, SUM(machineamount) FROM tohumschema.data WHERE ( year > " + str(
+                startdate) + " AND " + str(enddate) + " > year ) GROUP BY year")
+            data = cur.fetchall()
+            con.commit()
+            cur.close()
+
+        print(data)
+
+        return render_template('machines.html', data=data, startdate=startdate, enddate=enddate)
+
+@app.route('/workers', methods=["POST", "GET"])
+def workers():
+    if "user" not in session and "admin" not in session:
+        return redirect(url_for("login"))
+    else:
+        startdate = -1
+        enddate = -1
+        cur = con.cursor()
+        cur.execute("SELECT  year, SUM(workeramount) FROM tohumschema.data GROUP BY year")
+        data = cur.fetchall()
+        con.commit()
+        cur.close()
+
+        if request.method == "POST":
+            startdate = request.form["start"]
+            enddate = request.form["end"]
+
+            cur = con.cursor()
+            cur.execute("SELECT  year, SUM(workeramount) FROM tohumschema.data WHERE ( year > " + str(
+                startdate) + " AND " + str(enddate) + " > year ) GROUP BY year")
+            data = cur.fetchall()
+            con.commit()
+            cur.close()
+
+        print(data)
+
+        return render_template('workers.html', data=data, startdate=startdate, enddate=enddate)
+
+
+
 @app.route('/profile/data', methods=["POST", "GET"])
 def adddata():
     if "user" not in session and "admin" not in session:
