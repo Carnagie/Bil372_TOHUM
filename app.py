@@ -517,16 +517,27 @@ def settings():
             new_password = request.form["newpassword"]
             new_password2 = request.form["newpassword2"]
 
-            update_script = ""
             if name != values[0]:
-                update_script += "f.name={},".format(name)
+                cur.execute(
+                    "update tohumschema.farmer set name = '{}' where farmerid = {}".format(name,x)
+                )
             if lastname != values[1]:
-                update_script += "f.lastname={},".format(lastname)
+                cur.execute(
+                    "update tohumschema.farmer set lastname = '{}' where farmerid = {}".format(lastname,x)
+                )
             if email != values[2]:
-                update_script += "f.mail={},".format(email)
+                cur.execute(
+                    "update tohumschema.farmer set mail = '{}' where farmerid = {}".format(email,x)
+                )
             if city != values[3]:
-                #TODO @ardaekinci @carnagie city name den id getireni execute
-                update_script += "f.cityid={},".format(1)
+                cur.execute(
+                    "select cityid from tohumschema.city where cityname='{}'".format(city)
+                )
+                data2 = cur.fetchone()
+                print(data2[0])
+                cur.execute(
+                    "update tohumschema.farmer set cityid =  {} where farmerid = {}".format(data2[0],x)
+                )
             if old_password != values[4]:
                 print("eski sifre hatali")
                 return redirect(url_for("settings"))
@@ -535,9 +546,10 @@ def settings():
                     print("sifreler uyusmuyor")
                     return redirect(url_for("settings"))
                 else:
-                    update_script += "f.password={},".format(new_password)
-            if update_script[-1] == ",":
-                update_script = update_script[:-1]
+                    cur.execute(
+                        "update tohumschema.farmer set password = '{}' where farmerid = {}".format(new_password,x)
+                    )
+                    return redirect(url_for("settings"))
 
         else:
             return render_template('settings.html', data=data)
