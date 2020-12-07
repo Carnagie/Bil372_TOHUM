@@ -6,7 +6,6 @@ app = Flask(__name__)
 app.secret_key = "hello"
 con = psycopg2.connect(host="localhost", port="9999", database="tohumdb", user="super", password="whqrnr&6mxAj7")
 
-
 @app.route('/', methods=["GET", "POST"])
 def index():
     if "admin" in session or "user" in session:
@@ -436,6 +435,64 @@ def medicines():
         return render_template('medicines.html', data=data, startdate=startdate, enddate=enddate)
 
 
+@app.route('/machines', methods=["POST", "GET"])
+def machines():
+    if "user" not in session and "admin" not in session:
+        return redirect(url_for("login"))
+    else:
+        startdate = -1
+        enddate = -1
+        cur = con.cursor()
+        cur.execute("SELECT  year, SUM(machineamount) FROM tohumschema.data GROUP BY year")
+        data = cur.fetchall()
+        con.commit()
+        cur.close()
+
+        if request.method == "POST":
+            startdate = request.form["start"]
+            enddate = request.form["end"]
+
+            cur = con.cursor()
+            cur.execute("SELECT  year, SUM(machineamount) FROM tohumschema.data WHERE ( year > " + str(
+                startdate) + " AND " + str(enddate) + " > year ) GROUP BY year")
+            data = cur.fetchall()
+            con.commit()
+            cur.close()
+
+        print(data)
+
+        return render_template('machines.html', data=data, startdate=startdate, enddate=enddate)
+
+@app.route('/workers', methods=["POST", "GET"])
+def workers():
+    if "user" not in session and "admin" not in session:
+        return redirect(url_for("login"))
+    else:
+        startdate = -1
+        enddate = -1
+        cur = con.cursor()
+        cur.execute("SELECT  year, SUM(workeramount) FROM tohumschema.data GROUP BY year")
+        data = cur.fetchall()
+        con.commit()
+        cur.close()
+
+        if request.method == "POST":
+            startdate = request.form["start"]
+            enddate = request.form["end"]
+
+            cur = con.cursor()
+            cur.execute("SELECT  year, SUM(workeramount) FROM tohumschema.data WHERE ( year > " + str(
+                startdate) + " AND " + str(enddate) + " > year ) GROUP BY year")
+            data = cur.fetchall()
+            con.commit()
+            cur.close()
+
+        print(data)
+
+        return render_template('workers.html', data=data, startdate=startdate, enddate=enddate)
+
+
+
 @app.route('/profile/data', methods=["POST", "GET"])
 def adddata():
     if "user" not in session and "admin" not in session:
@@ -448,6 +505,8 @@ def adddata():
         latest1 = cur.fetchall()
         cur.close()
 
+        print(session["id"])
+
         if request.method == "POST":
             name = request.form["name"]
             area = request.form["area"]
@@ -455,24 +514,28 @@ def adddata():
             medicine = request.form["medicine"]
             worker = request.form["worker"]
             machine = request.form["machine"]
+            year = request.form["year"]
             cur2 = con.cursor()
+
             cur2.execute(
                 "INSERT INTO tohumschema.data  (farmerid, medicineamount,machineamount,workeramount,year) VALUES ( {} ,{}, {}, {},{});".format(
-                    session["id"], medicine, machine, worker, datetime.datetime.now().year))
-            cur2.commit()
+                    session["id"], medicine, machine, worker, year))
+            con.commit()
             cur2.close()
             cur3 = con.cursor()
             cur3.execute("SELECT d.dataid FROM tohumschema.data d ORDER BY d.dataid DESC LIMIT 1")
-            id = cur3.fetchone()[0]
+            did = cur3.fetchone()[0]
+
             cur3.execute(
-                "INSERT INTO tohumschema.productdata VALUES({},(SELECT productid FROM tohumschema.product WHERE name = '{}'),{},{},{},{})".format(
-                    id, name, session["id"], area, weight, datetime.datetime.now().year))
-            cur3.commit()
+                "INSERT INTO tohumschema.productdata ( dataid, productid, farmerid, area, ton, year ) VALUES({},(SELECT productid FROM tohumschema.product WHERE name = '{}'),{},{},{},{})".format(
+                    did, name, session["id"], area, weight, year))
+            con.commit()
             cur3.execute(
-                "SELECT p.name, pd.area, pd.ton, d.medicineamount, d.workeramount, d.machineamount FROM tohumschema.data d JOIN tohumschema.productdata pd ON d.dataid=pd.dataid JOIN product p ON pd.productid=p.productid WHERE d.farmerid = " +
-                session["id"] + " ORDER BY d.dataid DESC LIMIT 10")
+                "SELECT p.name, pd.area, pd.ton, d.medicineamount, d.workeramount, d.machineamount FROM tohumschema.data d JOIN tohumschema.productdata pd ON d.dataid=pd.dataid JOIN tohumschema.product p ON pd.productid=p.productid WHERE d.farmerid = " +
+                str(session["id"]) + " ORDER BY d.dataid DESC LIMIT 10")
             latest = cur3.fetchall()
             cur3.close()
+
             return render_template('adddata.html', data=latest)
         else:
             return render_template('adddata.html', data=latest1)
@@ -554,6 +617,16 @@ def settings():
         else:
             return render_template('settings.html', data=data)
 
+@app.route('/profile/tips', methods=["POST","GET"])
+def tips():
+    if "user" not in session and "admin" not in session:
+        return redirect(url_for("login"))
+    else:
+        cur = con.cursor()
+        cur.execute("select name, sum(area), sum(ton) from tohumschema.productdata join tohumschema.product on tohumschema.productdata.productid=tohumschema.product.productid where year=2020 group by productdata.productid, name order by sum(ton) desc limit 8")
+        data = cur.fetchall()
+        print(data)
+        return render_template("tips.html",data=data)
 
 @app.errorhandler(404)
 def page_not_found(e):

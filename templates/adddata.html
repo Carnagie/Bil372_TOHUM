@@ -121,7 +121,7 @@
                     </a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a href="/profile/settings" data-toggle="collapse" aria-expanded="false"
+                    <a href="/profile/settings" aria-expanded="false"
                        class="dropdown-toggle nav-link">
                         <em class="fe fe-settings fe-16"></em>
                         <span class="ml-3 item-text">Settings</span>
@@ -213,7 +213,7 @@
             </div> <!-- .col-12 -->
         </div> <!-- .row -->
         <div class="card-body">
-            <form class="row" method="post" action="#">
+        <form class="row" method="post" action="#">
                 <div class="col-md-6">
                     <div class="form-group mb-3">
                         <label for="name">Product Name</label>
@@ -221,35 +221,60 @@
                     </div>
                     <div class="form-group mb-3">
                         <label for="area">Area (hectare)</label>
-                        <input type="text" id="area" name="area" class="form-control">
+                        <input type="number" id="area" name="area" class="form-control">
                     </div>
                     <div class="form-group mb-3">
                         <label for="weight">Weight (ton)</label>
-                        <input type="text" id="weight" name="weight" class="form-control">
+                        <input type="number" id="weight" name="weight" class="form-control">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="year">Year</label>
+                        <select name="year" class="form-control">
+                            <option value="2020">2020</option>
+                            <option value="2019">2019</option>
+                            <option value="2018">2018</option>
+                            <option value="2017">2017</option>
+                            <option value="2016">2016</option>
+                            <option value="2015">2015</option>
+                            <option value="2014">2014</option>
+                            <option value="2013">2013</option>
+                            <option value="2012">2012</option>
+                            <option value="2011">2011</option>
+                            <option value="2010">2010</option>
+                            <option value="2009">2009</option>
+                            <option value="2008">2008</option>
+                            <option value="2007">2007</option>
+                            <option value="2006">2006</option>
+                            <option value="2005">2005</option>
+                            <option value="2004">2004</option>
+                            <option value="2003">2003</option>
+                            <option value="2002">2002</option>
+                            <option value="2001">2001</option>
+                            <option value="2000">2000</option>
+
+                        </select>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group mb-3">
                         <label for="medicine">Medicine Amount</label>
-                        <input type="text" id="medicine" name="medicine" class="form-control">
+                        <input type="number" step="0.1"id="medicine" name="medicine" class="form-control">
                     </div>
                     <div class="form-group mb-3">
                         <label for="worker">Worker Count</label>
-                        <input type="text" id="worker" name="worker" class="form-control">
+                        <input type="number" id="worker" name="worker" class="form-control">
                     </div>
                     <div class="form-group mb-3">
                         <label for="machine">Machine Count</label>
-                        <input type="text" id="machine" name="machine" class="form-control">
+                        <input type="number" id="machine" name="machine" class="form-control">
                     </div>
-                </div>
-                <div class="col-md-12">
                     <div class="form-group mb-3">
-                        <label></label>
+                        <label>Save</label>
                         <input type="submit" id="btnSave" name="btnSave" class="btn btn-primary w-100"
                                value="Save">
                     </div>
                 </div>
-            </form>
+        </form>        
         </div>
 
         <!-- simple table -->
@@ -273,21 +298,13 @@
                         {% for object in data %}
                         <tr>
                             <td>{{ object[0] }}</td>
-                            <td>{{ object[1] }}</td>
-                            <td>{{ object[2] }}</td>
-                            <td>{{ object[3] }}</td>
-                            <td>{{ object[4] }}</td>
-                            <td>{{ object[5] }}</td>
+                            <td>{{ object[1] }} hektar</td>
+                            <td>{{ object[2] }} ton</td>
+                            <td>{{ object[3] }} lt</td>
+                            <td>{{ object[4] }} people</td>
+                            <td>{{ object[5] }} pieces</td>
                         </tr>
                         {% endfor %}
-                        <tr>
-                            <td>Elma</td>
-                            <td>147 hektar</td>
-                            <td>115 ton</td>
-                            <td>278 lt</td>
-                            <td>12</td>
-                            <td>29</td>
-                        </tr>
                         </tbody>
                     </table>
                 </div>
