@@ -12,6 +12,8 @@ con = psycopg2.connect(host="localhost", port="9999", database="tohumdb", user="
 def index():
     if "admin" in session or "user" in session:
 
+
+        #Donat chart meta data about workers
         today = datetime.today()
         cur = con.cursor()
         cur.execute(
@@ -31,7 +33,7 @@ def index():
             if i[1] > maxVal:
                 maxYear = i[0]
                 maxVal = i[1]
-            if i[0] == 2019:
+            if i[0] == lastYear:
                 lastYear = i
 
         percentDiff = format((maxVal - data[0]) / data[0] * 100, '.2f')
@@ -46,8 +48,61 @@ def index():
         con.commit()
         cur.close()
 
+
+
+        #Line chart data about hectare distiribution
+        cur = con.cursor()
+        cur.execute("SELECT year, SUM(area) FROM tohumschema.productdata GROUP BY year;")
+        dataArea = cur.fetchall()
+        con.commit()
+        cur.close()
+
+        maxArea = 0
+        minArea = 99999
+        averageArea = 0
+        for i in dataArea:
+            averageArea += i[1]
+            if i[1] > maxArea:
+                maxArea = i[1]
+            if i[1] < minArea:
+                minArea = i[1]
+
+        averageArea = float(format(averageArea / len(dataArea), '.2f'))
+        print(dataArea)
+
+        maxAreaPercent = format((maxArea - averageArea) / averageArea * 100, '.2f')
+        minAreaPercent = format((minArea - averageArea) / averageArea * 100, '.2f')
+        
+
+        #Bar chart about 
+        cur = con.cursor()
+        cur.execute("SELECT productid, COUNT(productid) FROM tohumschema.productdata GROUP BY productid;")
+        dataProduct = cur.fetchall()
+        con.commit()
+        cur.close()
+
+        dataProductString = list()
+
+        for i in dataProduct:
+            if i[0] == None:
+                dataProduct.remove(i)
+
+        for i in dataProduct:
+            cur = con.cursor()
+            cur.execute( "SELECT productid, name FROM tohumschema.product WHERE productid = {};".format(str(i[0])))
+            stringProduct = cur.fetchall()
+            dataProductString.append( (stringProduct[0][1], i[1]))
+            con.commit()
+            cur.close()
+
+        print(dataProductString)
+
+
+        
+
         return render_template('index.html', data="T", chartData=data, dataAll=dataAll, maxYear=maxYear, maxVal=maxVal,
-                               percentDiff=percentDiff, lastPercentDiff=lastPercentDiff)
+                               percentDiff=percentDiff, lastPercentDiff=lastPercentDiff, lastYearData=lastYear, dataArea=dataArea,minArea=minArea,maxArea=maxArea,averageArea=averageArea,
+                               maxAreaPercent=maxAreaPercent, minAreaPercent=minAreaPercent,dataProductString=dataProductString )
     else:
 
         today = datetime.today()
