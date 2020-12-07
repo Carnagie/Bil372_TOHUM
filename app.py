@@ -500,11 +500,46 @@ def settings():
     else:
         cur = con.cursor()
         x = session.get("id", None)
-        if x:
-            cur.execute(
-                "select f.name, f.lastname, c.cityname, f.mail from tohumschema.farmer as f, tohumschema.city as c where f.cityid=c.cityid and f.farmerid={}".format(
-                    x))
-            data = cur.fetchone()
+        cur.execute(
+            "select f.name, f.lastname, c.cityname, f.mail from tohumschema.farmer as f, tohumschema.city as c where f.cityid=c.cityid and f.farmerid={}".format(
+                x))
+        data = cur.fetchone()
+        cur.execute(
+            "select f.name, f.lastname, f.mail, c.cityname, f.password from tohumschema.farmer as f, tohumschema.city as c where f.cityid=c.cityid and f.farmerid={}".format(
+                x))
+        values = cur.fetchone()
+        if request.method == "POST":
+            name = request.form["name"]
+            lastname = request.form["lastname"]
+            email = request.form["email"]
+            city = request.form["city"]
+            old_password = request.form["password"]
+            new_password = request.form["newpassword"]
+            new_password2 = request.form["newpassword2"]
+
+            update_script = ""
+            if name != values[0]:
+                update_script += "f.name={},".format(name)
+            if lastname != values[1]:
+                update_script += "f.lastname={},".format(lastname)
+            if email != values[2]:
+                update_script += "f.mail={},".format(email)
+            if city != values[3]:
+                #TODO ardaekinci city name den id getireni execute
+                update_script += "f.cityid={},".format(1)
+            if old_password != values[4]:
+                print("eski sifre hatali")
+                return redirect(url_for("settings"))
+            else:
+                if new_password != new_password2:
+                    print("sifreler uyusmuyor")
+                    return redirect(url_for("settings"))
+                else:
+                    update_script += "f.password={},".format(new_password)
+            if update_script[-1] == ",":
+                update_script = update_script[:-1]
+
+        else:
             return render_template('settings.html', data=data)
 
 
