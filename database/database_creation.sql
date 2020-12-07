@@ -1,6 +1,7 @@
 CREATE SCHEMA tohumschema;
 
-SET search_path TO tohumschema;
+SET
+search_path TO tohumschema;
 
 CREATE TABLE region
 (
@@ -57,7 +58,8 @@ CREATE TABLE data
     MedicineAmount integer,
     MachineAmount  integer,
     WorkerAmount   integer,
-    Year           integer CHECK ( Year > 1950 ),
+    Year           integer CHECK ( Year > 1950
+) ,
     PRIMARY KEY (DataID),
     FOREIGN KEY (FarmerID) REFERENCES farmer (FarmerID)
 );
@@ -70,10 +72,35 @@ CREATE TABLE productdata
     FarmerID     integer,
     Area         integer,
     Ton          integer,
-    Year         integer CHECK ( Year > 1950 ),
+    Year         integer CHECK ( Year > 1950
+) ,
     PRIMARY KEY (DataID),
     FOREIGN KEY (DataID) REFERENCES data (DataID),
     FOREIGN KEY (ProductID) REFERENCES product (ProductID),
     FOREIGN KEY (FarmerID) REFERENCES farmer (FarmerID),
     FOREIGN KEY (DataID) REFERENCES data (DataID)
+);
+
+CREATE TABLE growing
+(
+    GrowId      serial,
+    FarmerId    integer,
+    ProductId   integer,
+    Area        integer,
+    SeedDate    date,
+    HarvestDate date,
+    Status      varchar(15),
+    PRIMARY KEY (GrowId),
+    FOREIGN KEY (FarmerId) REFERENCES farmer (FarmerId),
+    FOREIGN KEY (ProductId) REFERENCES product (ProductId)
+);
+
+CREATE TABLE systemlog
+(
+    LogId       serial,
+    FarmerId    integer,
+    OperType    varchar(15),
+    LogDateTime timestamp,
+    PRIMARY KEY (LogId),
+    FOREIGN KEY (FarmerId) REFERENCES farmer (FarmerId)
 );
