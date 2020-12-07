@@ -5,7 +5,6 @@ app = Flask(__name__)
 app.secret_key = "hello"
 con = psycopg2.connect(host="localhost", port="9999", database="tohumdb", user="super", password="whqrnr&6mxAj7")
 
-
 @app.route('/', methods=["GET","POST"])
 def index():
     if "admin" in session or "user" in session:
@@ -259,6 +258,35 @@ def legumes():
         return redirect(url_for("login"))
     else:
         return render_template('legumes.html')
+
+@app.route('/medicines', methods=["POST","GET"])
+def medicines():
+
+    if "user" not in session and "admin" not in session:
+        return redirect(url_for("login"))
+    else:
+        startdate = -1
+        enddate   = -1
+        cur = con.cursor()
+        cur.execute("SELECT  year, SUM(medicineamount) FROM tohumschema.data GROUP BY year")
+        data = cur.fetchall()
+        con.commit()
+        cur.close()
+
+        if request.method == "POST":
+            startdate = request.form["start"]
+            enddate   = request.form["end"]
+
+            cur = con.cursor()
+            cur.execute("SELECT  year, SUM(medicineamount) FROM tohumschema.data WHERE ( year > "+ str(startdate) + " AND "+ str(enddate) +" > year ) GROUP BY year")
+            data = cur.fetchall()
+            con.commit()
+            cur.close()
+
+
+        print(data)
+
+        return render_template('medicines.html',data=data,startdate=startdate,enddate=enddate)
 
 @app.route('/profile/overview', methods=["POST", "GET"])
 def overview():
