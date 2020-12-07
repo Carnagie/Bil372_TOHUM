@@ -3,8 +3,7 @@ import psycopg2
 
 app = Flask(__name__)
 app.secret_key = "hello"
-#con = psycopg2.connect(host="localhost", port="9999", database="tohumdb", user="super", password="whqrnr&6mxAj7")
-con = psycopg2.connect(host="localhost", port="5432", database="tohumdb", user="postgres", password="facethest0rm")
+con = psycopg2.connect(host="localhost", port="9999", database="tohumdb", user="super", password="whqrnr&6mxAj7")
 
 @app.route('/', methods=["GET","POST"])
 def index():
