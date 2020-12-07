@@ -250,7 +250,70 @@ def grains():
     if "user" not in session and "admin" not in session:
         return redirect(url_for("login"))
     else:
-        return render_template('grains.html')
+        if request.method == "POST":
+            name = request.form["name"]
+            region = request.form["region"]
+            opposite = request.form["opposite"]
+            year = request.form["year"]
+            area = request.form["area"]
+            coefficient = request.form["coefficient"]
+            ton = request.form["ton"]
+            cur = con.cursor()
+
+            if name == "" and region == "" and opposite == "" and year == "" and area == "" and coefficient == "" and ton == "":
+                cur.execute(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3")
+            elif name:
+                cur.execute(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3 and name='{}'".format(
+                        name))
+            elif region:
+                cur.execute(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3 and r.regionid=(select regionid from tohumschema.region where regionname='{}')".format(
+                        region))
+            elif opposite:
+                cur.execute(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3 and p.productid=(select oppositeproductid from tohumschema.opposite where productid=(select productid from tohumschema.product where name='{}'))".format(
+                        opposite))
+            elif year:
+                cur.execute(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3 and p.productid=(select productid from tohumschema.productdata where year={})".format(
+                        year))
+            elif area:
+                cur.execute(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3 and p.productid=(select productid from tohumschema.productdata where area>{})".format(
+                        int(area)))
+            elif coefficient:
+                cur.execute(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3 and p.coefficient={}".format(
+                        int(coefficient)))
+            elif ton:
+                cur.execute(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3 and p.productid=(select productid from tohumschema.productdata where ton>{})".format(
+                        int(ton)))
+
+            data = None
+            try:
+                data = cur.fetchall()
+                print(data)
+            except:
+                print("no fetch")
+            cur.close()
+
+            return render_template('grains.html', data=data)
+
+        else:
+            cur = con.cursor()
+            # cur.execute("select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1")
+            cur.execute("select * from tohumschema.product where type=3")
+            x = cur.fetchall()
+            cur.close()
+            if x:
+                return render_template('grains.html', data=x)
+            else:
+                # hicbir data yoksa en basta
+                return render_template('grains.html', data=[-1, -1, -1, -1, -1])
+
 
 @app.route('/legumes', methods=["POST","GET"])
 def legumes():
@@ -258,8 +321,86 @@ def legumes():
     if "user" not in session and "admin" not in session:
         return redirect(url_for("login"))
     else:
-        return render_template('legumes.html')
+        if request.method == "POST":
+            name = request.form["name"]
+            region = request.form["region"]
+            opposite = request.form["opposite"]
+            year = request.form["year"]
+            area = request.form["area"]
+            coefficient = request.form["coefficient"]
+            ton = request.form["ton"]
+            cur = con.cursor()
 
+            if name == "" and region == "" and opposite == "" and year == "" and area == "" and coefficient == "" and ton == "":
+                cur.execute(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3")
+            elif name:
+                cur.execute(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4 and name='{}'".format(
+                        name))
+            elif region:
+                cur.execute(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4 and r.regionid=(select regionid from tohumschema.region where regionname='{}')".format(
+                        region))
+            elif opposite:
+                cur.execute(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4 and p.productid=(select oppositeproductid from tohumschema.opposite where productid=(select productid from tohumschema.product where name='{}'))".format(
+                        opposite))
+            elif year:
+                cur.execute(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4 and p.productid=(select productid from tohumschema.productdata where year={})".format(
+                        year))
+            elif area:
+                cur.execute(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4 and p.productid=(select productid from tohumschema.productdata where area>{})".format(
+                        int(area)))
+            elif coefficient:
+                cur.execute(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4 and p.coefficient={}".format(
+                        int(coefficient)))
+            elif ton:
+                cur.execute(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4 and p.productid=(select productid from tohumschema.productdata where ton>{})".format(
+                        int(ton)))
+
+            data = None
+            try:
+                data = cur.fetchall()
+                print(data)
+            except:
+                print("no fetch")
+            cur.close()
+
+            return render_template('grains.html', data=data)
+
+        else:
+            cur = con.cursor()
+            # cur.execute("select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1")
+            cur.execute("select * from tohumschema.product where type=4")
+            x = cur.fetchall()
+            cur.close()
+            if x:
+                return render_template('legumes.html', data=x)
+            else:
+                # hicbir data yoksa en basta
+                return render_template('legumes.html', data=[-1, -1, -1, -1, -1])
+
+"""@app.route('/grains', methods=["POST","GET"])
+def grains():
+
+    if "user" not in session and "admin" not in session:
+        return redirect(url_for("login"))
+    else:
+        return render_template('grains.html')
+"""
+"""@app.route('/legumes', methods=["POST","GET"])
+def legumes():
+
+    if "user" not in session and "admin" not in session:
+        return redirect(url_for("login"))
+    else:
+        return render_template('legumes.html')
+"""
 @app.route('/profile/overview', methods=["POST", "GET"])
 def overview():
 
