@@ -482,7 +482,13 @@ def overview():
     if "user" not in session and "admin" not in session:
         return redirect(url_for("login"))
     else:
-        return render_template('overview.html')
+        cur = con.cursor()
+        x = session.get("id",None)
+        if x:
+            cur.execute("select f.name, f.lastname, c.cityname from tohumschema.farmer as f, tohumschema.city as c where f.cityid=c.cityid and f.farmerid={}".format(x))
+            data = cur.fetchone()
+            return render_template('overview.html', data=data)
+
 
 
 @app.route('/profile/settings', methods=["POST", "GET"])
