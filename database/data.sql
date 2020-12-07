@@ -246,14 +246,6 @@ VALUES(1,0,74054,0,2018);
 INSERT INTO data (farmerid, medicineamount, machineamount, workeramount, year)
 VALUES(1,0,76430,0,2019);
 
-SELECT productid, SUM(area), SUM(ton)
-FROM productdata
-GROUP BY productid;
-
-
-
-
-
 
 INSERT INTO data (farmerid, medicineamount, machineamount, workeramount, year)
 VALUES(1, 7628,0,0,2006);
