@@ -525,7 +525,7 @@ def settings():
             if email != values[2]:
                 update_script += "f.mail={},".format(email)
             if city != values[3]:
-                #TODO ardaekinci city name den id getireni execute
+                #TODO @ardaekinci @carnagie city name den id getireni execute
                 update_script += "f.cityid={},".format(1)
             if old_password != values[4]:
                 print("eski sifre hatali")
