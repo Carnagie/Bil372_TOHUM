@@ -211,8 +211,18 @@ def medicines():
         con.commit()
         cur.close()
 
+        if request.method == "POST":
+            startdate = request.form["start"]
+            enddate   = request.form["end"]
 
-        print("data",data)
+            cur = con.cursor()
+            cur.execute("SELECT  year, SUM(medicineamount) FROM tohumschema.data WHERE ( year > "+ str(startdate) + " AND "+ str(enddate) +" > year ) GROUP BY year")
+            data = cur.fetchall()
+            con.commit()
+            cur.close()
+
+
+        print(data)
 
         return render_template('medicines.html',data=data,startdate=startdate,enddate=enddate)
 

@@ -212,6 +212,7 @@
                 </div>
             </div> <!-- .col-12 -->
         </div> <!-- .row -->
+        <form method="post"  action="/medicines">
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
@@ -256,7 +257,7 @@
                 <div class="col-md-6">
                     <div class="form-group mb-3">
                         <label for="region">End Date</label>
-                        <select name="start" id="start" class="form-control">
+                        <select name="end" id="end" class="form-control">
                             <option value="2020">2020</option>
                             <option value="2019">2019</option>
                             <option value="2018">2018</option>
@@ -299,6 +300,7 @@
                 </div>
             </div>
         </div>
+        </form>
 
         <!-- simple table -->
         <div class="col-md-12 my-4">
@@ -307,8 +309,27 @@
                     <h5 class="card-title">Search Results</h5>
                     <p class="card-text"> Agricultural Medicine Between ({{startdate}} - {{enddate}}) </p>
 
+                    <div style="width: 100%;">
 
                     <canvas id="bar-chart" width="800" height="250"></canvas>
+
+                    <canvas id="line-chart" width="800" height="250"></canvas>
+                       
+                    <div style="display: flex;">
+
+                        <div style="position: relative;max-width: 35%;margin: 100px;box-shadow: 0 0 20px rgba(169, 178, 169, 0.76);">
+                        <canvas id="bar-chart-horizontal" width="800" height="450"></canvas>
+                        </div>
+
+                        <div style="position: relative;max-width: 35%;margin: 100px;box-shadow: 0 0 20px rgba(169, 178, 169, 0.76);">
+                        <canvas id="doughnut-chart" width="800" height="450"></canvas>
+                        </div>
+
+
+                    </div>
+
+                    </div>
+
 
                     <script type="text/javascript">
                         // Bar chart
@@ -317,7 +338,7 @@
                             type: 'bar',
                             data: {
                               labels: [
-                              {% for label in data|sort(attribute=1) %}
+                              {% for label in data|sort(attribute=0) %}
                               "{{label[0]}}",
                               {% endfor %}
                               ],
@@ -325,14 +346,14 @@
                                 {
                                   label: "Population (millions)",
                                   backgroundColor: [
-                                  {% for col in data|sort(attribute=1) %}
+                                  {% for col in data|sort(attribute=0) %}
                                   
                                   colors[{{loop.index}} % 11],
                                     
                                   {% endfor %}
                                   ],
                                   data: [
-                                  {% for val in data|sort(attribute=1) %}
+                                  {% for val in data|sort(attribute=0) %}
 
                                     {{val}},
 
@@ -349,6 +370,121 @@
                               }
                             }
                         });
+                    </script>
+
+
+                    <script type="text/javascript">
+                        new Chart(document.getElementById("line-chart"), {
+                          type: 'line',
+                          data: {
+                              labels: [
+                              {% for label in data|sort(attribute=0) %}
+                              "{{label[0]}}",
+                              {% endfor %}
+                              ],
+                              datasets: [
+                                {
+                                  label: "Population (millions)",
+                                  borderColor: "#DB3ACA",
+                                  fill: false,
+                                  data: [
+                                  {% for val in data|sort(attribute=0) %}
+
+                                    {{val}},
+
+                                  {% endfor %}
+                                  ]
+                                }
+                              ]
+                          },
+                          options: {
+                            title: {
+                              display: true,
+                              text: 'World population per region (in millions)'
+                            }
+                          }
+                        });
+                    </script>
+
+                    <script type="text/javascript">
+
+                        new Chart(document.getElementById("bar-chart-horizontal"), {
+                            type: 'horizontalBar',
+                            data: {
+                              labels: [
+                              {% for label in data|sort(attribute=0) %}
+                              "{{label[0]}}",
+                              {% endfor %}
+                              ],
+                              datasets: [
+                                {
+                                  label: "Population (millions)",
+                                  backgroundColor: [
+                                  {% for col in data|sort(attribute=0) %}
+                                  
+                                  colors[{{loop.index}} % 11],
+                                    
+                                  {% endfor %}
+                                  ],
+                                  data: [
+                                  {% for val in data|sort(attribute=0) %}
+
+                                    {{val}},
+
+                                  {% endfor %}
+                                  ]
+                                }
+                              ]
+                            },
+                            options: {
+                              legend: { display: false },
+                              title: {
+                                display: true,
+                                text: 'Predicted world population (millions) in 2050'
+                              }
+                            }
+                        });
+
+                    </script>
+
+                    <script type="text/javascript">
+
+                        new Chart(document.getElementById("doughnut-chart"), {
+                            type: 'doughnut',
+                            data: {
+                              labels: [
+                              {% for label in data|sort(attribute=0) %}
+                              "{{label[0]}}",
+                              {% endfor %}
+                              ],
+                              datasets: [
+                                {
+                                  label: "Population (millions)",
+                                  backgroundColor: [
+                                  {% for col in data|sort(attribute=0) %}
+                                  
+                                  colors[{{loop.index}} % 11],
+                                    
+                                  {% endfor %}
+                                  ],
+                                  data: [
+                                  {% for val in data|sort(attribute=0) %}
+
+                                    {{val}},
+
+                                  {% endfor %}
+                                  ]
+                                }
+                              ]
+                            },
+                            options: {
+                              title: {
+                                display: true,
+                                text: 'Predicted world population (millions) in 2050'
+                              }
+                            }
+                        });
+
                     </script>
 
 
