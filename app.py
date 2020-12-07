@@ -223,7 +223,6 @@ def fruits():
                     "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and name='{}'".format(
                         name))
             elif region:
-                print(region)
                 cur.execute(
                     "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and r.regionid={}".format(
                         region))
@@ -295,7 +294,7 @@ def vegatables():
                         name))
             elif region:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=2 and r.regionid=(select regionid from tohumschema.region where regionname='{}')".format(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=2 and r.regionid={}".format(
                         region))
             elif opposite:
                 cur.execute(
@@ -365,7 +364,7 @@ def grains():
                         name))
             elif region:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3 and r.regionid=(select regionid from tohumschema.region where regionname='{}')".format(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=3 and r.regionid={}".format(
                         region))
             elif opposite:
                 cur.execute(
@@ -435,7 +434,7 @@ def legumes():
                         name))
             elif region:
                 cur.execute(
-                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4 and r.regionid=(select regionid from tohumschema.region where regionname='{}')".format(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=4 and r.regionid={}".format(
                         region))
             elif opposite:
                 cur.execute(
