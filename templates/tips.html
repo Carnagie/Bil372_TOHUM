@@ -210,6 +210,7 @@
                     </div>
                     <div class="row">
                         <!-------------BURADA BAŞLA----------------------->
+                        {% for object in data%}
                         <div class="col-md-3">
                             <div class="card shadow mb-4">
                                 <div class="card-body text-center">
@@ -220,9 +221,9 @@
                                         </a>
                                     </div>
                                     <div class="card-text my-2">
-                                        <strong class="card-title my-0">Elma </strong>
-                                        <p class="small text-muted mb-0">50 Ton</p>
-                                        <p class="small"><span class="badge badge-light text-muted">15 Hektar</span></p>
+                                        <strong class="card-title my-0">{{object[0]}} </strong>
+                                        <p class="small text-muted mb-0">{{object[1]}} Ton</p>
+                                        <p class="small"><span class="badge badge-light text-muted">{{object[2]}} Hektar</span></p>
                                     </div>
                                 </div> <!-- ./card-text -->
                                 <div class="card-footer">
@@ -235,6 +236,7 @@
                                 </div> <!-- /.card-footer -->
                             </div>
                         </div> <!-- .col -->
+                        {% endfor %}
                         <!-------------BURADA BİTİR----------------------------------->
 
                     </div> <!-- .row -->
