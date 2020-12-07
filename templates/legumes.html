@@ -281,41 +281,15 @@
                         </tr>
                         </thead>
                         <tbody>
+                        {% for object in data %}
                         <tr>
-                            <td>Bakla</td>
-                            <td>+7</td>
-                            <td>İç Anadolu Bölgesi</td>
-                            <td>24000</td>
-                            <td>16586245</td>
+                            <td>{{ object[0] }}</td>
+                            <td>{{ object[1] }}</td>
+                            <td>{{ object[2] }}</td>
+                            <td>{{ object[3] }}</td>
+                            <td>{{ object[4] }}</td>
                         </tr>
-                        <tr>
-                            <td>Nohut</td>
-                            <td>+19</td>
-                            <td>Akdeniz Bölgesi</td>
-                            <td>14963</td>
-                            <td>492192</td>
-                        </tr>
-                        <tr>
-                            <td>Mercimek</td>
-                            <td>-4</td>
-                            <td>Ege Bölgesi</td>
-                            <td>25963</td>
-                            <td>2397295</td>
-                        </tr>
-                        <tr>
-                            <td>Fasulye</td>
-                            <td>-21</td>
-                            <td>Marmara Bölgesi</td>
-                            <td>122682</td>
-                            <td>2786427</td>
-                        </tr>
-                        <tr>
-                            <td>Bezelye</td>
-                            <td>-34</td>
-                            <td>Ege Bölgesi</td>
-                            <td>123549</td>
-                            <td>169273987</td>
-                        </tr>
+                        {% endfor %}
                         </tbody>
                     </table>
                 </div>
