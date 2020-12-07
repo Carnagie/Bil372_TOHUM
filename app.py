@@ -1,6 +1,7 @@
 from flask import Flask, render_template, url_for, redirect, request, session, flash
 import psycopg2
 import datetime
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = "hello"
@@ -9,9 +10,82 @@ con = psycopg2.connect(host="localhost", port="9999", database="tohumdb", user="
 @app.route('/', methods=["GET", "POST"])
 def index():
     if "admin" in session or "user" in session:
-        return render_template('index.html', data="T")
+
+        today = datetime.today()
+        cur = con.cursor()
+        cur.execute("SELECT  year, SUM(workeramount) FROM tohumschema.data WHERE (year = {} ) GROUP BY year".format(today.year))
+        data = cur.fetchone()
+
+        cur = con.cursor()
+        cur.execute("SELECT  year, SUM(workeramount) FROM tohumschema.data GROUP BY year ORDER BY year")
+        maxData = cur.fetchall()
+
+        print(maxData)
+
+        maxYear = today.year
+        maxVal = 0
+        lastYear = today.year - 1
+        for i in maxData:
+            if i[1] > maxVal:
+                maxYear = i[0]
+                maxVal = i[1]
+            if i[0] == 2019:
+                lastYear = i
+
+        percentDiff = format((maxVal - data[0]) / data[0] * 100, '.2f')
+
+        lastPercentDiff = format((lastYear[1] - data[0]) / data[0] * 100, '.2f')
+
+        print(maxYear, maxVal, percentDiff)
+        print(lastYear)
+
+
+        cur.execute("SELECT  year, SUM(workeramount) FROM tohumschema.data GROUP BY year")
+        dataAll = cur.fetchall()
+        con.commit()
+        cur.close()
+
+
+        return render_template('index.html', data="T", chartData=data, dataAll=dataAll,maxYear=maxYear,maxVal=maxVal,percentDiff=percentDiff,lastPercentDiff=lastPercentDiff)
     else:
-        return render_template('index.html', data="F")
+
+
+        today = datetime.today()
+        cur = con.cursor()
+        cur.execute("SELECT  year, SUM(workeramount) FROM tohumschema.data WHERE (year = {} ) GROUP BY year".format(today.year))
+        data = cur.fetchone()
+
+        cur = con.cursor()
+        cur.execute("SELECT  year, SUM(workeramount) FROM tohumschema.data GROUP BY year ORDER BY year")
+        maxData = cur.fetchall()
+
+        print(maxData)
+
+        maxYear = today.year
+        maxVal = 0
+        lastYear = today.year - 1
+        for i in maxData:
+            if i[1] > maxVal:
+                maxYear = i[0]
+                maxVal = i[1]
+            if i[0] == 2019:
+                lastYear = i
+
+        percentDiff = format((maxVal - data[0]) / data[0] * 100, '.2f')
+
+        lastPercentDiff = format((lastYear[1] - data[0]) / data[0] * 100, '.2f')
+
+        print(maxYear, maxVal, percentDiff)
+        print(lastYear)
+
+
+        cur.execute("SELECT  year, SUM(workeramount) FROM tohumschema.data GROUP BY year")
+        dataAll = cur.fetchall()
+        con.commit()
+        cur.close()
+
+
+        return render_template('index.html', data="F", chartData=data, dataAll=dataAll,maxYear=maxYear,maxVal=maxVal,percentDiff=percentDiff,lastPercentDiff=lastPercentDiff)
 
 
 @app.route('/admin', methods=["POST", "GET"])

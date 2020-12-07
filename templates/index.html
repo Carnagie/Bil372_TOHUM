@@ -25,6 +25,7 @@
     <!-- App CSS -->
     <link rel="stylesheet" href="../static/css/app-light.css" id="lightTheme">
     <link rel="stylesheet" href="../static/css/app-dark.css" id="darkTheme" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
     <style>
         .container-11 {
             position: relative;
@@ -242,25 +243,66 @@
                                     <div class="row items-align-baseline h-100">
                                         <div class="col-md-6 my-3">
                                             <p class="mb-0"><strong
-                                                    class="mb-0 text-uppercase text-muted">Earning</strong></p>
-                                            <h3>$2,562</h3>
-                                            <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing
-                                                elit.</p>
+                                                    class="mb-0 text-uppercase text-muted">2020 Total Worker</strong></p>
+                                            <h3>{{chartData[1]}}</h3>
                                         </div>
-                                        <div class="col-md-6 my-4 text-center">
-                                            <div class="chart-box mx-4">
-                                                <div id="radialbarWidget"></div>
-                                            </div>
-                                        </div>
+                                        
+
+
+                                            <!--chartjs-->
+
+                                        <canvas id="doughnut-chart" width="800" height="450"></canvas>
+
+                                        <script type="text/javascript">
+                                            var colors = ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3ADBD1","#DB3ACA","#F1DC2A","#4EF12A","#8A2AF1","#F18956"];
+                                            new Chart(document.getElementById("doughnut-chart"), {
+
+                                                type: 'doughnut',
+                                                data: {
+                                                  labels: [
+                                                  {% for label in dataAll|sort(attribute=0) %}
+                                                  "{{label[0]}}",
+                                                  {% endfor %}
+                                                  ],
+                                                  datasets: [
+                                                    {
+                                                      label: "Population (millions)",
+                                                      backgroundColor: [
+                                                      {% for col in dataAll|sort(attribute=0) %}
+                                                      
+                                                      colors[{{loop.index}} % 11],
+                                                        
+                                                      {% endfor %}
+                                                      ],
+                                                      data: [
+                                                      {% for val in dataAll|sort(attribute=0) %}
+
+                                                        {{val}},
+
+                                                      {% endfor %}
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                options: {
+                                                  title: {
+                                                    display: true,
+                                                    text: 'Sum of Every Worker For Each Year'
+                                                  }
+                                                }
+                                            });
+
+                                        </script>
+
                                         <div class="col-md-6 border-top py-3">
-                                            <p class="mb-1"><strong class="text-muted">Cost</strong></p>
-                                            <h4 class="mb-0">108</h4>
-                                            <p class="small text-muted mb-0"><span>37.7% Last week</span></p>
+                                            <p class="mb-1"><strong class="text-muted">Max Worker</strong></p>
+                                            <h4 class="mb-0">Year {{maxYear}}, {{maxVal}}</h4>
+                                            <p class="small text-muted mb-0"><span> {{percentDiff}} %  For Best Year</span></p>
                                         </div> <!-- .col -->
                                         <div class="col-md-6 border-top py-3">
                                             <p class="mb-1"><strong class="text-muted">Revenue</strong></p>
                                             <h4 class="mb-0">1168</h4>
-                                            <p class="small text-muted mb-0"><span>-18.9% Last week</span></p>
+                                            <p class="small text-muted mb-0"><span>{{lastPercentDiff}} % Last Year</span></p>
                                         </div> <!-- .col -->
                                     </div>
                                 </div> <!-- .card-body -->
