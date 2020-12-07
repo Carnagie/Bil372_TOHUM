@@ -563,11 +563,58 @@ def settings():
     else:
         cur = con.cursor()
         x = session.get("id", None)
-        if x:
-            cur.execute(
-                "select f.name, f.lastname, c.cityname, f.mail from tohumschema.farmer as f, tohumschema.city as c where f.cityid=c.cityid and f.farmerid={}".format(
-                    x))
-            data = cur.fetchone()
+        cur.execute(
+            "select f.name, f.lastname, c.cityname, f.mail from tohumschema.farmer as f, tohumschema.city as c where f.cityid=c.cityid and f.farmerid={}".format(
+                x))
+        data = cur.fetchone()
+        cur.execute(
+            "select f.name, f.lastname, f.mail, c.cityname, f.password from tohumschema.farmer as f, tohumschema.city as c where f.cityid=c.cityid and f.farmerid={}".format(
+                x))
+        values = cur.fetchone()
+        if request.method == "POST":
+            name = request.form["name"]
+            lastname = request.form["lastname"]
+            email = request.form["email"]
+            city = request.form["city"]
+            old_password = request.form["password"]
+            new_password = request.form["newpassword"]
+            new_password2 = request.form["newpassword2"]
+
+            if name != values[0]:
+                cur.execute(
+                    "update tohumschema.farmer set name = '{}' where farmerid = {}".format(name,x)
+                )
+            if lastname != values[1]:
+                cur.execute(
+                    "update tohumschema.farmer set lastname = '{}' where farmerid = {}".format(lastname,x)
+                )
+            if email != values[2]:
+                cur.execute(
+                    "update tohumschema.farmer set mail = '{}' where farmerid = {}".format(email,x)
+                )
+            if city != values[3]:
+                cur.execute(
+                    "select cityid from tohumschema.city where cityname='{}'".format(city)
+                )
+                data2 = cur.fetchone()
+                print(data2[0])
+                cur.execute(
+                    "update tohumschema.farmer set cityid =  {} where farmerid = {}".format(data2[0],x)
+                )
+            if old_password != values[4]:
+                print("eski sifre hatali")
+                return redirect(url_for("settings"))
+            else:
+                if new_password != new_password2:
+                    print("sifreler uyusmuyor")
+                    return redirect(url_for("settings"))
+                else:
+                    cur.execute(
+                        "update tohumschema.farmer set password = '{}' where farmerid = {}".format(new_password,x)
+                    )
+                    return redirect(url_for("settings"))
+
+        else:
             return render_template('settings.html', data=data)
 
 @app.route('/profile/tips', methods=["POST","GET"])
