@@ -704,6 +704,21 @@ def tips():
         print(data)
         return render_template("tips.html", data=data)
 
+@app.route('/profile/growings', methods=["POST", "GET"])
+def growings():
+    if "user" not in session and "admin" not in session:
+        return redirect(url_for("login"))
+    else:
+        if request.method == "POST":
+            name = request.form["name"]
+            area = request.form["area"]
+            start_date = request.form["seedDate"]
+            end_date = request.form["harvestDate"]
+            print(name, area, start_date, end_date)
+            return redirect(url_for("growings"))
+        else:
+            return render_template("growing.html")
+
 
 @app.errorhandler(404)
 def page_not_found(e):
