@@ -570,6 +570,16 @@ def settings():
             data = cur.fetchone()
             return render_template('settings.html', data=data)
 
+@app.route('/profile/tips', methods=["POST","GET"])
+def tips():
+    if "user" not in session and "admin" not in session:
+        return redirect(url_for("login"))
+    else:
+        cur = con.cursor()
+        cur.execute("select name, sum(area), sum(ton) from tohumschema.productdata join tohumschema.product on tohumschema.productdata.productid=tohumschema.product.productid where year=2020 group by productdata.productid, name order by sum(ton) desc limit 8")
+        data = cur.fetchall()
+        print(data)
+        return render_template("tips.html",data=data)
 
 @app.errorhandler(404)
 def page_not_found(e):
