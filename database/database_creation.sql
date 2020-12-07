@@ -54,8 +54,9 @@ CREATE TABLE data
 (
     DataID   serial,
     FarmerID integer,
-    Type     integer NOT NULL,
-    Amount   integer,
+    MedicineAmount   integer,
+    MachineAmount   integer,
+    WorkerAmount   integer,
     Year     integer CHECK ( Year > 1950 ),
     PRIMARY KEY (DataID),
     FOREIGN KEY (FarmerID) REFERENCES farmer (FarmerID)
