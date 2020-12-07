@@ -93,14 +93,17 @@ def admin():
     if "admin" not in session:
         return redirect(url_for("login"))
     else:
-        return "admin sayfasi"
+        return render_template("welcome.html", data="Admin")
 
 
 @app.route('/user', methods=["POST", "GET"])
 def user():
     if "user" in session:
-        user = session["user"]
-        return "user sayfasi"
+        id = session.get("id", None)
+        cur = con.cursor()
+        cur.execute("select name from tohumschema.farmer where farmerid={}".format(id))
+        x = cur.fetchone()[0]
+        return render_template("welcome.html", data=x)
     else:
         return redirect(url_for("login"))
 
@@ -703,6 +706,7 @@ def tips():
         data = cur.fetchall()
         print(data)
         return render_template("tips.html", data=data)
+
 
 @app.route('/profile/growings', methods=["POST", "GET"])
 def growings():
