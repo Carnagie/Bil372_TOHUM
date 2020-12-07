@@ -477,18 +477,20 @@ def adddata():
         else:
             return render_template('adddata.html', data=latest1)
 
+
 @app.route('/profile/overview', methods=["POST", "GET"])
 def overview():
     if "user" not in session and "admin" not in session:
         return redirect(url_for("login"))
     else:
         cur = con.cursor()
-        x = session.get("id",None)
+        x = session.get("id", None)
         if x:
-            cur.execute("select f.name, f.lastname, c.cityname from tohumschema.farmer as f, tohumschema.city as c where f.cityid=c.cityid and f.farmerid={}".format(x))
+            cur.execute(
+                "select f.name, f.lastname, c.cityname from tohumschema.farmer as f, tohumschema.city as c where f.cityid=c.cityid and f.farmerid={}".format(
+                    x))
             data = cur.fetchone()
             return render_template('overview.html', data=data)
-
 
 
 @app.route('/profile/settings', methods=["POST", "GET"])
@@ -496,7 +498,14 @@ def settings():
     if "user" not in session and "admin" not in session:
         return redirect(url_for("login"))
     else:
-        return render_template('settings.html')
+        cur = con.cursor()
+        x = session.get("id", None)
+        if x:
+            cur.execute(
+                "select f.name, f.lastname, c.cityname, f.mail from tohumschema.farmer as f, tohumschema.city as c where f.cityid=c.cityid and f.farmerid={}".format(
+                    x))
+            data = cur.fetchone()
+            return render_template('settings.html', data=data)
 
 
 @app.errorhandler(404)
