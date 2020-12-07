@@ -203,15 +203,18 @@ def medicines():
     if "user" not in session and "admin" not in session:
         return redirect(url_for("login"))
     else:
+        startdate = -1
+        enddate   = -1
         cur = con.cursor()
         cur.execute("SELECT  year, SUM(medicineamount) FROM tohumschema.data GROUP BY year")
         data = cur.fetchall()
         con.commit()
         cur.close()
 
+
         print("data",data)
 
-        return render_template('medicines.html',data=data)
+        return render_template('medicines.html',data=data,startdate=startdate,enddate=enddate)
 
 @app.route('/profile/overview', methods=["POST", "GET"])
 def overview():
