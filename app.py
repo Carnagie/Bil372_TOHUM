@@ -1,26 +1,29 @@
 from flask import Flask, render_template, url_for, redirect, request, session, flash
 import psycopg2
+import datetime
 
 app = Flask(__name__)
 app.secret_key = "hello"
 con = psycopg2.connect(host="localhost", port="9999", database="tohumdb", user="super", password="whqrnr&6mxAj7")
 
 
-@app.route('/', methods=["GET","POST"])
+@app.route('/', methods=["GET", "POST"])
 def index():
     if "admin" in session or "user" in session:
-        return render_template('index.html',data="T")
+        return render_template('index.html', data="T")
     else:
-        return render_template('index.html',data="F")
+        return render_template('index.html', data="F")
 
-@app.route('/admin',methods=["POST","GET"])
+
+@app.route('/admin', methods=["POST", "GET"])
 def admin():
     if "admin" not in session:
         return redirect(url_for("login"))
     else:
         return "admin sayfasi"
 
-@app.route('/user', methods=["POST","GET"])
+
+@app.route('/user', methods=["POST", "GET"])
 def user():
     if "user" in session:
         user = session["user"]
@@ -28,9 +31,9 @@ def user():
     else:
         return redirect(url_for("login"))
 
-@app.route('/login',methods=["POST","GET"])
-def login():
 
+@app.route('/login', methods=["POST", "GET"])
+def login():
     if "admin" in session:
         return redirect(url_for("admin"))
 
@@ -43,46 +46,49 @@ def login():
             cur = con.cursor()
             email = request.form["email"]
             password = request.form["password"]
-            cur.execute("select password from tohumschema.farmer where mail='{}'".format(email))
-            truePassword = cur.fetchone()
+            cur.execute("select farmerid,password from tohumschema.farmer where mail='{}'".format(email))
+            data = cur.fetchone()
+            truePassword = data[1]
+            id = data[0]
             con.commit()
             cur.close()
 
             if email == "admin@admin.com" and password == "admin":
                 session["admin"] = "admin"
+                session["id"] = 1
                 return redirect(url_for("admin"))
 
             if truePassword == None:
                 return redirect(url_for("login"))
 
             else:
-                if password == truePassword[0].__str__():
+                if password == truePassword.__str__():
                     session["user"] = "user"
+                    session["id"] = id
                     return redirect(url_for("user"))
                 else:
                     return redirect(url_for("login"))
-
-
 
         else:
             if "user" in session:
                 return redirect(url_for("user"))
             return render_template('login.html')
 
+
 @app.route('/logout')
 def logout():
     session.pop("admin", None)
     session.pop("user", None)
+    session.pop("id", None)
     return redirect(url_for("login"))
 
-@app.route('/register', methods=["POST","GET"])
-def register():
 
+@app.route('/register', methods=["POST", "GET"])
+def register():
     cur = con.cursor()
     cur.execute("SELECT * FROM tohumschema.city;")
     cities = cur.fetchall()
     cur.close()
-
 
     if request.method == "POST":
 
@@ -107,7 +113,9 @@ def register():
             return redirect(url_for("register"))
         else:
             print("kaydolabilir")
-            cur.execute("INSERT into tohumschema.farmer ( mail, name, lastname, password, cityid) values(%s, %s, %s, %s, %s)", (email,first_name,last_name, first_password, city))
+            cur.execute(
+                "INSERT into tohumschema.farmer ( mail, name, lastname, password, cityid) values(%s, %s, %s, %s, %s)",
+                (email, first_name, last_name, first_password, city))
             cur.execute("SELECT farmerid from tohumschema.farmer where mail='{}'".format(email))
             farmerID = cur.fetchone()[0]
             con.commit()
@@ -116,12 +124,11 @@ def register():
         return redirect(url_for("register"))
 
     else:
-        return render_template('register.html',cities=cities)
+        return render_template('register.html', cities=cities)
 
 
-@app.route('/fruits', methods=["POST","GET"])
+@app.route('/fruits', methods=["POST", "GET"])
 def fruits():
-
     if "user" not in session and "admin" not in session:
         return redirect(url_for("login"))
     else:
@@ -136,21 +143,36 @@ def fruits():
             cur = con.cursor()
 
             if name == "" and region == "" and opposite == "" and year == "" and area == "" and coefficient == "" and ton == "":
-                cur.execute("select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1")
+                cur.execute(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1")
             elif name:
-                cur.execute("select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and name='{}'".format(name))
+                cur.execute(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and name='{}'".format(
+                        name))
             elif region:
-                cur.execute("select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and r.regionid=(select regionid from tohumschema.region where regionname='{}')".format(region))
+                cur.execute(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and r.regionid=(select regionid from tohumschema.region where regionname='{}')".format(
+                        region))
             elif opposite:
-                cur.execute("select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and p.productid=(select oppositeproductid from tohumschema.opposite where productid=(select productid from tohumschema.product where name='{}'))".format(opposite))
+                cur.execute(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and p.productid=(select oppositeproductid from tohumschema.opposite where productid=(select productid from tohumschema.product where name='{}'))".format(
+                        opposite))
             elif year:
-                cur.execute("select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and p.productid=(select productid from tohumschema.productdata where year={})".format(year))
+                cur.execute(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and p.productid=(select productid from tohumschema.productdata where year={})".format(
+                        year))
             elif area:
-                cur.execute("select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and p.productid=(select productid from tohumschema.productdata where area>{})".format(int(area)))
+                cur.execute(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and p.productid=(select productid from tohumschema.productdata where area>{})".format(
+                        int(area)))
             elif coefficient:
-                cur.execute("select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and p.coefficient={}".format(int(coefficient)))
-            elif  ton:
-                cur.execute("select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and p.productid=(select productid from tohumschema.productdata where ton>{})".format(int(ton)))
+                cur.execute(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and p.coefficient={}".format(
+                        int(coefficient)))
+            elif ton:
+                cur.execute(
+                    "select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1 and p.productid=(select productid from tohumschema.productdata where ton>{})".format(
+                        int(ton)))
 
             data = None
             try:
@@ -160,23 +182,23 @@ def fruits():
                 print("no fetch")
             cur.close()
 
-            return render_template('fruits.html',data=data)
+            return render_template('fruits.html', data=data)
 
         else:
             cur = con.cursor()
-            #cur.execute("select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1")
+            # cur.execute("select p.name, p.coefficient, r.regionname, pd.area, pd.ton from tohumschema.product as p, tohumschema.region as r, tohumschema.productdata as pd where p.productid=pd.productid and p.regionid=r.regionid and p.type=1")
             cur.execute("select * from tohumschema.product where type=1")
             x = cur.fetchall()
             cur.close()
             if x:
                 return render_template('fruits.html', data=x)
             else:
-                #hicbir data yoksa en basta
-                return render_template('fruits.html', data=[-1,-1,-1,-1,-1])
+                # hicbir data yoksa en basta
+                return render_template('fruits.html', data=[-1, -1, -1, -1, -1])
 
-@app.route('/vegetables', methods=["POST","GET"])
+
+@app.route('/vegetables', methods=["POST", "GET"])
 def vegatables():
-
     if "user" not in session and "admin" not in session:
         return redirect(url_for("login"))
     else:
@@ -244,9 +266,9 @@ def vegatables():
                 # hicbir data yoksa en basta
                 return render_template('vegetables.html', data=[-1, -1, -1, -1, -1])
 
-@app.route('/grains', methods=["POST","GET"])
-def grains():
 
+@app.route('/grains', methods=["POST", "GET"])
+def grains():
     if "user" not in session and "admin" not in session:
         return redirect(url_for("login"))
     else:
@@ -315,9 +337,8 @@ def grains():
                 return render_template('grains.html', data=[-1, -1, -1, -1, -1])
 
 
-@app.route('/legumes', methods=["POST","GET"])
+@app.route('/legumes', methods=["POST", "GET"])
 def legumes():
-
     if "user" not in session and "admin" not in session:
         return redirect(url_for("login"))
     else:
@@ -385,14 +406,14 @@ def legumes():
                 # hicbir data yoksa en basta
                 return render_template('legumes.html', data=[-1, -1, -1, -1, -1])
 
-@app.route('/medicines', methods=["POST","GET"])
-def medicines():
 
+@app.route('/medicines', methods=["POST", "GET"])
+def medicines():
     if "user" not in session and "admin" not in session:
         return redirect(url_for("login"))
     else:
         startdate = -1
-        enddate   = -1
+        enddate = -1
         cur = con.cursor()
         cur.execute("SELECT  year, SUM(medicineamount) FROM tohumschema.data GROUP BY year")
         data = cur.fetchall()
@@ -401,86 +422,88 @@ def medicines():
 
         if request.method == "POST":
             startdate = request.form["start"]
-            enddate   = request.form["end"]
+            enddate = request.form["end"]
 
             cur = con.cursor()
-            cur.execute("SELECT  year, SUM(medicineamount) FROM tohumschema.data WHERE ( year > "+ str(startdate) + " AND "+ str(enddate) +" > year ) GROUP BY year")
+            cur.execute("SELECT  year, SUM(medicineamount) FROM tohumschema.data WHERE ( year > " + str(
+                startdate) + " AND " + str(enddate) + " > year ) GROUP BY year")
             data = cur.fetchall()
             con.commit()
             cur.close()
 
-
         print(data)
 
-        return render_template('medicines.html',data=data,startdate=startdate,enddate=enddate)
+        return render_template('medicines.html', data=data, startdate=startdate, enddate=enddate)
+
+
+@app.route('/profile/data', methods=["POST", "GET"])
+def adddata():
+    if "user" not in session and "admin" not in session:
+        return redirect(url_for("login"))
+    else:
+        cur = con.cursor()
+        cur.execute(
+            "SELECT p.name, pd.area, pd.ton, d.medicineamount, d.workeramount, d.machineamount FROM tohumschema.data d JOIN tohumschema.productdata pd ON d.dataid=pd.dataid JOIN tohumschema.product p ON pd.productid=p.productid WHERE d.farmerid = {} ORDER BY d.dataid DESC LIMIT 10".format(
+                session["id"]))
+        latest1 = cur.fetchall()
+        cur.close()
+
+        if request.method == "POST":
+            name = request.form["name"]
+            area = request.form["area"]
+            weight = request.form["weight"]
+            medicine = request.form["medicine"]
+            worker = request.form["worker"]
+            machine = request.form["machine"]
+            cur2 = con.cursor()
+            cur2.execute(
+                "INSERT INTO tohumschema.data  (farmerid, medicineamount,machineamount,workeramount,year) VALUES ( {} ,{}, {}, {},{});".format(
+                    session["id"], medicine, machine, worker, datetime.datetime.now().year))
+            cur2.commit()
+            cur2.close()
+            cur3 = con.cursor()
+            cur3.execute("SELECT d.dataid FROM tohumschema.data d ORDER BY d.dataid DESC LIMIT 1")
+            id = cur3.fetchone()[0]
+            cur3.execute(
+                "INSERT INTO tohumschema.productdata VALUES({},(SELECT productid FROM tohumschema.product WHERE name = '{}'),{},{},{},{})".format(
+                    id, name, session["id"], area, weight, datetime.datetime.now().year))
+            cur3.commit()
+            cur3.execute(
+                "SELECT p.name, pd.area, pd.ton, d.medicineamount, d.workeramount, d.machineamount FROM tohumschema.data d JOIN tohumschema.productdata pd ON d.dataid=pd.dataid JOIN product p ON pd.productid=p.productid WHERE d.farmerid = " +
+                session["id"] + " ORDER BY d.dataid DESC LIMIT 10")
+            latest = cur3.fetchall()
+            cur3.close()
+            return render_template('adddata.html', data=latest)
+        else:
+            return render_template('adddata.html', data=latest1)
 
 @app.route('/profile/overview', methods=["POST", "GET"])
 def overview():
-
     if "user" not in session and "admin" not in session:
         return redirect(url_for("login"))
     else:
         return render_template('overview.html')
 
+
 @app.route('/profile/settings', methods=["POST", "GET"])
 def settings():
-
     if "user" not in session and "admin" not in session:
         return redirect(url_for("login"))
     else:
         return render_template('settings.html')
+
 
 @app.errorhandler(404)
 def page_not_found(e):
     # note that we set the 404 status explicitly
     return render_template('page-404.html'), 404
 
+
 @app.errorhandler(500)
 def page_not_found(e):
     # note that we set the 500 status explicitly
     return render_template('page-500.html'), 500
 
+
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
