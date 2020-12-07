@@ -52,26 +52,28 @@ CREATE TABLE opposite
 
 CREATE TABLE data
 (
-    DataID   serial,
-    FarmerID integer,
-    MedicineAmount   integer,
-    MachineAmount   integer,
+    DataID         serial,
+    FarmerID       integer,
+    MedicineAmount integer,
+    MachineAmount  integer,
     WorkerAmount   integer,
-    Year     integer CHECK ( Year > 1950 ),
+    Year           integer CHECK ( Year > 1950 ),
     PRIMARY KEY (DataID),
     FOREIGN KEY (FarmerID) REFERENCES farmer (FarmerID)
 );
 
 CREATE TABLE productdata
 (
-    DataID    integer,
-    ProductID integer,
-    FarmerID  integer,
-    Area      integer,
-    Ton       integer,
-    Year      integer CHECK ( Year > 1950 ),
+    ProductataID serial,
+    DataID       integer,
+    ProductID    integer,
+    FarmerID     integer,
+    Area         integer,
+    Ton          integer,
+    Year         integer CHECK ( Year > 1950 ),
     PRIMARY KEY (DataID),
     FOREIGN KEY (DataID) REFERENCES data (DataID),
     FOREIGN KEY (ProductID) REFERENCES product (ProductID),
-    FOREIGN KEY (FarmerID) REFERENCES farmer (FarmerID)
+    FOREIGN KEY (FarmerID) REFERENCES farmer (FarmerID),
+    FOREIGN KEY (DataID) REFERENCES data (DataID)
 );
