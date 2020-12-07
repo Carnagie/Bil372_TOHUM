@@ -292,9 +292,7 @@
                         </select>
                     </div>
                 </div>
-                </div>
-
-                    <div class="form-group mb-3" style="width: 50%;margin-left: 50%;">
+                    <div class="form-group mb-3" style="width: 30%;margin-left: 35%;">
                         <label>Search</label>
                         <input type="submit" id="btnSearch" name="btnSearch" class="btn btn-primary w-100" value="Search">
 
@@ -314,15 +312,32 @@
 
                     <script type="text/javascript">
                         // Bar chart
+                        var colors = ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3ADBD1","#DB3ACA","#F1DC2A","#4EF12A","#8A2AF1","#F18956"];
                         new Chart(document.getElementById("bar-chart"), {
                             type: 'bar',
                             data: {
-                              labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
+                              labels: [
+                              {% for label in data|sort(attribute=1) %}
+                              "{{label[0]}}",
+                              {% endfor %}
+                              ],
                               datasets: [
                                 {
                                   label: "Population (millions)",
-                                  backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-                                  data: [2478,5267,734,784,433]
+                                  backgroundColor: [
+                                  {% for col in data|sort(attribute=1) %}
+                                  
+                                  colors[{{loop.index}} % 11],
+                                    
+                                  {% endfor %}
+                                  ],
+                                  data: [
+                                  {% for val in data|sort(attribute=1) %}
+
+                                    {{val}},
+
+                                  {% endfor %}
+                                  ]
                                 }
                               ]
                             },

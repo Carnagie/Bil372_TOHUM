@@ -179,20 +179,6 @@ def vegatables():
     if "user" not in session and "admin" not in session:
         return redirect(url_for("login"))
     else:
-        cur = con.cursor()
-        cur.execute("SELECT * FROM tohumschema.data")
-        data = cur.fetchall()
-        con.commit()
-        cur.close()
-
-
-        print(data)
-
-
-
-
-
-
         return render_template('vegetables.html')
 
 @app.route('/grains', methods=["POST","GET"])
@@ -217,7 +203,15 @@ def medicines():
     if "user" not in session and "admin" not in session:
         return redirect(url_for("login"))
     else:
-        return render_template('medicines.html')
+        cur = con.cursor()
+        cur.execute("SELECT  year, SUM(medicineamount) FROM tohumschema.data GROUP BY year")
+        data = cur.fetchall()
+        con.commit()
+        cur.close()
+
+        print("data",data)
+
+        return render_template('medicines.html',data=data)
 
 @app.route('/profile/overview', methods=["POST", "GET"])
 def overview():
