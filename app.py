@@ -371,7 +371,7 @@ def legumes():
                 print("no fetch")
             cur.close()
 
-            return render_template('grains.html', data=data)
+            return render_template('legumes.html', data=data)
 
         else:
             cur = con.cursor()
@@ -385,22 +385,35 @@ def legumes():
                 # hicbir data yoksa en basta
                 return render_template('legumes.html', data=[-1, -1, -1, -1, -1])
 
-"""@app.route('/grains', methods=["POST","GET"])
-def grains():
+@app.route('/medicines', methods=["POST","GET"])
+def medicines():
 
     if "user" not in session and "admin" not in session:
         return redirect(url_for("login"))
     else:
-        return render_template('grains.html')
-"""
-"""@app.route('/legumes', methods=["POST","GET"])
-def legumes():
+        startdate = -1
+        enddate   = -1
+        cur = con.cursor()
+        cur.execute("SELECT  year, SUM(medicineamount) FROM tohumschema.data GROUP BY year")
+        data = cur.fetchall()
+        con.commit()
+        cur.close()
 
-    if "user" not in session and "admin" not in session:
-        return redirect(url_for("login"))
-    else:
-        return render_template('legumes.html')
-"""
+        if request.method == "POST":
+            startdate = request.form["start"]
+            enddate   = request.form["end"]
+
+            cur = con.cursor()
+            cur.execute("SELECT  year, SUM(medicineamount) FROM tohumschema.data WHERE ( year > "+ str(startdate) + " AND "+ str(enddate) +" > year ) GROUP BY year")
+            data = cur.fetchall()
+            con.commit()
+            cur.close()
+
+
+        print(data)
+
+        return render_template('medicines.html',data=data,startdate=startdate,enddate=enddate)
+
 @app.route('/profile/overview', methods=["POST", "GET"])
 def overview():
 
