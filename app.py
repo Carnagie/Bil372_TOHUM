@@ -355,6 +355,7 @@ def fruits():
                 print("no fetch")
             cur.close()
 
+
             return render_template('fruits.html', data=data)
 
         else:
@@ -710,6 +711,13 @@ def adddata():
             latest = cur3.fetchall()
             cur3.close()
 
+
+            cur2 = con.cursor()
+            cur2.execute("INSERT INTO tohumschema.systemlog ( farmerid, opertype, logdatetime )  VALUES ( {}, 4, TIMESTAMP '{}' ) ".format(session["id"], datetime.today() ) )
+            con.commit()
+            cur2.close()
+
+
             return render_template('adddata.html', data=latest)
         else:
             return render_template('adddata.html', data=latest1)
@@ -786,6 +794,15 @@ def settings():
                     cur.execute(
                         "update tohumschema.farmer set password = '{}' where farmerid = {}".format(new_password, x)
                     )
+
+
+                    cur2 = con.cursor()
+                    cur2.execute("INSERT INTO tohumschema.systemlog ( farmerid, opertype, logdatetime )  VALUES ( {}, 3, TIMESTAMP '{}' ) ".format(session["id"], datetime.today() ) )
+                    con.commit()
+                    cur2.close()
+
+
+
                     return redirect(url_for("settings"))
 
         else:
