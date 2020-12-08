@@ -25,6 +25,7 @@
     <!-- App CSS -->
     <link rel="stylesheet" href="../static/css/app-light.css" id="lightTheme">
     <link rel="stylesheet" href="../static/css/app-dark.css" id="darkTheme" disabled>
+    <link rel="stylesheet" href="../static/css/growing.css">
     <style>
         .container-11 {
             position: relative;
@@ -202,6 +203,18 @@
         </nav>
     </aside>
     <main role="main" class="main-content">
+
+
+    <div class="bg-modal">
+      <div class="modal-content">
+        <div class="close">+</div>
+
+      </div>
+
+    </form>
+    </div>       
+
+
         <div class="col-12">
             <div class="container-fluid">
                 <div class="row justify-content-center">
@@ -288,7 +301,7 @@
                                 <td>{{datum[2]}}</td>
                                 <td>{{datum[3]}}</td>
                                 <td>
-                                    <form><input type="hidden" value="{{datum[0]}}" name="x"><input type="submit"
+                                    <form><input type="hidden" value="{{datum[0]}}" name="x"><input onclick="popUp();" id="button{{loop.index}}" type="button"
                                                                                          class="btn btn-dark"
                                                                                          value="Harvest"></form>
                                 </td>
@@ -529,5 +542,6 @@
     }
 </script>
 <script src="../static/js/apps.js"></script>
+<script src="../static/js/growing.js"></script>
 </body>
 </html>
