@@ -320,7 +320,7 @@
                                 <div class="card-body">
                                         
 
-                                    <canvas id="line-chart" width="800" height="450"></canvas>
+                                    <canvas id="line-chart" width="800" height="450" style="margin-top: 10%;"></canvas>
                                                  
 
                                     <script type="text/javascript">
@@ -379,19 +379,61 @@
                         <div class="col-md-12 col-lg-4">
                             <div class="card shadow eq-card mb-4">
                                 <div class="card-body">
-                                    <div class="d-flex mt-3 mb-4">
 
-                                    <canvas id="bar-chart" width="800" height="450"></canvas>
 
-                                    </div> <!-- .d-flex -->
+                                    <canvas id="bar-chart" width="800" height="450" style="margin-top: 10%;"></canvas>
+
+                                        <script type="text/javascript">
+                                            
+                                        var colors = ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3ADBD1","#DB3ACA","#F1DC2A","#4EF12A","#8A2AF1","#F18956"];
+
+
+                                        // Bar chart
+                                        new Chart(document.getElementById("bar-chart"), {
+                                            type: 'bar',
+                                            data: {
+                                              labels: [
+                                              {% for label in dataProductString |sort(attribute=0) %}
+                                              "{{label[0]}}",
+                                              {% endfor %}
+                                              ],
+                                              datasets: [
+                                                {
+                                                  label: "Trending Products",
+                                                  backgroundColor: [
+                                                  {% for col in dataProductString |sort(attribute=0) %}
+                                                  
+                                                  colors[{{loop.index}} % 11],
+                                                    
+                                                  {% endfor %}
+                                                  ],
+                                                  data: [
+                                                  {% for val in dataProductString |sort(attribute=0) %}
+                                                  "{{val[1]}}",
+                                                  {% endfor %}
+                                                  ]
+                                                }
+                                              ]
+                                            },
+                                            options: {
+                                              legend: { display: false },
+                                              title: {
+                                                display: true,
+                                                text: 'Predicted world population (millions) in 2050'
+                                              }
+                                            }
+                                        });
+
+                                    </script>
+ 
                                     <div class="row border-top">
                                         <div class="col-md-6 pt-4">
-                                            <h6 class="mb-0">108 <span class="small text-muted">+37.7%</span></h6>
-                                            <p class="mb-0 text-muted">Cost</p>
+                                            <h6 class="mb-0"> {{maxProductLabel}} <span class="small text-muted">{{maxProduct}}</span></h6>
+                                            <p class="mb-0 text-muted">Most Seeded</p>
                                         </div>
                                         <div class="col-md-6 pt-4">
-                                            <h6 class="mb-0">1168 <span class="small text-muted">-18.9%</span></h6>
-                                            <p class="mb-0 text-muted">Revenue</p>
+                                            <h6 class="mb-0"> {{minProductLabel}} <span class="small text-muted">{{minProduct}}</span></h6>
+                                            <p class="mb-0 text-muted">Least Seeded</p>
                                         </div>
                                     </div> <!-- .row -->
                                 </div> <!-- .card-body -->

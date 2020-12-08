@@ -97,12 +97,28 @@ def index():
 
         print(dataProductString)
 
+        maxProduct = 0
+        maxProductLabel = ""
+
+        minProduct = 999999
+        minProductLabel = ""
+
+        for i in dataProductString:
+            if i[1] > maxProduct:
+                maxProduct = i[1]
+                maxProductLabel = i[0]
+            if i[1] < minProduct:
+                minProduct = i[1]
+                minProductLabel = i[0]
+
+
 
         
 
         return render_template('index.html', data="T", chartData=data, dataAll=dataAll, maxYear=maxYear, maxVal=maxVal,
                                percentDiff=percentDiff, lastPercentDiff=lastPercentDiff, lastYearData=lastYear, dataArea=dataArea,minArea=minArea,maxArea=maxArea,averageArea=averageArea,
-                               maxAreaPercent=maxAreaPercent, minAreaPercent=minAreaPercent,dataProductString=dataProductString )
+                               maxAreaPercent=maxAreaPercent, minAreaPercent=minAreaPercent,dataProductString=dataProductString,maxProduct=maxProduct,maxProductLabel=maxProductLabel
+                               ,minProductLabel=minProductLabel,minProduct=minProduct)
     else:
 
         today = datetime.today()
