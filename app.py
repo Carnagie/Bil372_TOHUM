@@ -115,7 +115,7 @@ def index():
         # account log output goes here
 
         cur = con.cursor()
-        cur.execute("SELECT farmerid, opertype, logdatetime FROM tohumschema.systemlog WHERE opertype = '1' or opertype = '2' or opertype = '3' ORDER BY logdatetime DESC;")
+        cur.execute("SELECT farmerid, opertype, logdatetime FROM tohumschema.systemlog WHERE opertype = '1' or opertype = '2' or opertype = '3' or opertype = '4' or opertype = '5' ORDER BY logdatetime DESC;")
         dataAccountLogs = cur.fetchall()
         con.commit()
         cur.close()
