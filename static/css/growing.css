@@ -9,23 +9,28 @@
   align-items: center;
   z-index: 9999;
 }
-
 .modal-content {
   justify-content: center;
   align-items: center;
   width: 50vw;
-  height: 50vh;
+  height: 70vh;
   margin-right: 300px;
-  background-color: #A2CA6B;
+  background-color: whitesmoke;
   position: relative;
 }
-
 .close {
   cursor: pointer;
-  color: #A50404;
+  color: #820000;
   position: absolute;
   top: 0;
   right: 14px;
   font-size: 60px;
   transform: rotate(45deg);
+}
+
+.innerData ul li {
+  margin: 5%;
+}
+.innerData h2 {
+  color: black;
 }
