@@ -203,6 +203,14 @@ def login():
             if email == "admin@admin.com" and password == "admin":
                 session["admin"] = "admin"
                 session["id"] = 1
+                
+                cur = con.cursor()
+                cur.execute("INSERT INTO tohumschema.systemlog ( farmerid, opertype, logdatetime )  VALUES ( {}, 1, TIMESTAMP '{}' ) ".format(session["id"], datetime.today() ) )
+                con.commit()
+                cur.close()
+                
+
+
                 return redirect(url_for("admin"))
 
             if truePassword == None:
@@ -212,6 +220,15 @@ def login():
                 if password == truePassword.__str__():
                     session["user"] = "user"
                     session["id"] = id
+
+                    cur = con.cursor()
+                    cur.execute("INSERT INTO tohumschema.systemlog ( farmerid, opertype, logdatetime )  VALUES ( {}, 1, TIMESTAMP '{}' ) ".format(session["id"], datetime.today() ) )
+                    con.commit()
+                    cur.close()
+
+
+
+
                     return redirect(url_for("user"))
                 else:
                     return redirect(url_for("login"))
@@ -242,8 +259,6 @@ def register():
         email = request.form["email"]
         first_name = request.form["firstname"]
         last_name = request.form["lastname"]
-        country = request.form["country"]
-        region = request.form["region"]
         city = request.form["city"]
         for i in cities:
             if city == i[2]:
@@ -266,6 +281,17 @@ def register():
             cur.execute("SELECT farmerid from tohumschema.farmer where mail='{}'".format(email))
             farmerID = cur.fetchone()[0]
             con.commit()
+
+
+            cur2 = con.cursor()
+            cur2.execute("INSERT INTO tohumschema.systemlog ( farmerid, opertype, logdatetime )  VALUES ( {}, 2, TIMESTAMP '{}' ) ".format(farmerID, datetime.today() ) )
+            con.commit()
+            cur2.close()
+
+
+
+
+
         cur.close()
 
         return redirect(url_for("register"))
