@@ -30,7 +30,7 @@ Tarım ve Çevre ile alakalı paylaşılan, açık veya kapalı kaynaklardan eld
 
 ## Veritabanı Şeması
 
-![diagram](/database/databasediagram.png)
+![diagram](/resources/diagram.png)
 
 ## Giriş ve Şifre Bilgileri
 
