@@ -12,8 +12,8 @@
 .modal-content {
   justify-content: center;
   align-items: center;
-  width: 50vw;
-  height: 70vh;
+  width: 60vw;
+  height: 90vh;
   margin-right: 300px;
   background-color: whitesmoke;
   position: relative;
@@ -29,7 +29,7 @@
 }
 
 .innerData ul li {
-  margin: 5%;
+  margin: 2%;
 }
 .innerData h2 {
   color: black;
