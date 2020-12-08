@@ -334,7 +334,6 @@ def register():
             print("hata mesaji")
             return redirect(url_for("register"))
         else:
-            print("kaydolabilir")
             cur.execute(
                 "INSERT into tohumschema.farmer ( mail, name, lastname, password, cityid) values(%s, %s, %s, %s, %s)",
                 (email, first_name, last_name, first_password, city))
@@ -407,9 +406,8 @@ def fruits():
             data = None
             try:
                 data = cur.fetchall()
-                print(data)
             except:
-                print("no fetch")
+                pass
             cur.close()
 
             return render_template('fruits.html', data=data)
@@ -477,9 +475,8 @@ def vegatables():
             data = None
             try:
                 data = cur.fetchall()
-                print(data)
             except:
-                print("no fetch")
+                pass
             cur.close()
 
             return render_template('vegetables.html', data=data)
@@ -547,9 +544,8 @@ def grains():
             data = None
             try:
                 data = cur.fetchall()
-                print(data)
             except:
-                print("no fetch")
+                pass
             cur.close()
 
             return render_template('grains.html', data=data)
@@ -617,9 +613,8 @@ def legumes():
             data = None
             try:
                 data = cur.fetchall()
-                print(data)
             except:
-                print("no fetch")
+                pass
             cur.close()
 
             return render_template('legumes.html', data=data)
@@ -661,8 +656,6 @@ def medicines():
             con.commit()
             cur.close()
 
-        print(data)
-
         return render_template('medicines.html', data=data, startdate=startdate, enddate=enddate)
 
 
@@ -689,8 +682,6 @@ def machines():
             data = cur.fetchall()
             con.commit()
             cur.close()
-
-        print(data)
 
         return render_template('machines.html', data=data, startdate=startdate, enddate=enddate)
 
@@ -719,8 +710,6 @@ def workers():
             con.commit()
             cur.close()
 
-        print(data)
-
         return render_template('workers.html', data=data, startdate=startdate, enddate=enddate)
 
 
@@ -735,8 +724,6 @@ def adddata():
                 session["id"]))
         latest1 = cur.fetchall()
         cur.close()
-
-        print(session["id"])
 
         if request.method == "POST":
             name = request.form["name"]
@@ -835,7 +822,6 @@ def settings():
                     "select cityid from tohumschema.city where cityname='{}'".format(city)
                 )
                 data2 = cur.fetchone()
-                print(data2[0])
                 cur.execute(
                     "update tohumschema.farmer set cityid =  {} where farmerid = {}".format(data2[0], x)
                 )
@@ -873,7 +859,6 @@ def tips():
         cur.execute(
             "select name, sum(area), sum(ton) from tohumschema.productdata join tohumschema.product on tohumschema.productdata.productid=tohumschema.product.productid where year=2020 group by productdata.productid, name order by sum(ton) desc limit 8")
         data = cur.fetchall()
-        print(data)
         return render_template("tips.html", data=data)
 
 
@@ -887,8 +872,13 @@ def growings():
             area = request.form["area"]
             start_date = request.form["seedDate"]
             end_date = request.form["harvestDate"]
-            print(name, area, start_date, end_date)
             cur = con.cursor()
+            cur.execute("select productid from tohumschema.product where name='{}'".format(name))
+            productid = cur.fetchone()[0]
+            cur.execute(
+                "INSERT INTO tohumschema.growing (farmerid, productid, area, seeddate, harvestdate, status) VALUES ({}, {}, {}, TIMESTAMP '{}',TIMESTAMP '{}', 'waiting')".format(
+                    session.get("id", None), productid, area, start_date, end_date))
+            con.commit()
             cur.execute(
                 "select p.name, g.area, g.seeddate, g.harvestdate from tohumschema.product as p, tohumschema.growing as g where p.productid=g.productid and g.farmerid={} group by p.name, g.area, g.seeddate, g.harvestdate, p.productid".format(
                     session.get("id", None)))
@@ -902,9 +892,7 @@ def growings():
                 "select p.name, g.area, g.seeddate, g.harvestdate, g.status from tohumschema.product as p, tohumschema.growing as g where p.productid=g.productid and g.farmerid={} group by p.name, g.area, g.seeddate, g.harvestdate, g.status, p.productid".format(
                     session.get("id", None)))
             x = cur.fetchall()
-            print(x)
             percents = percent_calculator(x)
-            print(percents)
             cur.close()
             return render_template("growing.html", data=zip(x, percents))
 
