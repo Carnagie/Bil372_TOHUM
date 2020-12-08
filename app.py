@@ -13,7 +13,6 @@ def index():
     if "admin" in session or "user" in session:
 
         # Donat chart meta data about workers
-        # Donat chart meta data about workers
         today = datetime.today()
         cur = con.cursor()
         cur.execute(
@@ -23,8 +22,6 @@ def index():
         cur = con.cursor()
         cur.execute("SELECT  year, SUM(workeramount) FROM tohumschema.data GROUP BY year ORDER BY year")
         maxData = cur.fetchall()
-
-        print(maxData)
 
         maxYear = today.year
         maxVal = 0
@@ -40,15 +37,10 @@ def index():
 
         lastPercentDiff = format((lastYear[1] - data[0]) / data[0] * 100, '.2f')
 
-        print(maxYear, maxVal, percentDiff)
-        print(lastYear)
-
         cur.execute("SELECT  year, SUM(workeramount) FROM tohumschema.data GROUP BY year")
         dataAll = cur.fetchall()
         con.commit()
         cur.close()
-
-        # Line chart data about hectare distiribution
 
         # Line chart data about hectare distiribution
 
@@ -69,7 +61,6 @@ def index():
                 minArea = i[1]
 
         averageArea = float(format(averageArea / len(dataArea), '.2f'))
-        print(dataArea)
 
         maxAreaPercent = format((maxArea - averageArea) / averageArea * 100, '.2f')
         minAreaPercent = format((minArea - averageArea) / averageArea * 100, '.2f')
@@ -82,8 +73,6 @@ def index():
         dataProductString = cur.fetchall()
         con.commit()
         cur.close()
-
-        print(dataProductString)
 
         maxProduct = 0
         maxProductLabel = ""
@@ -107,7 +96,6 @@ def index():
         dataAccountNamedLogs = cur.fetchall()
         con.commit()
         cur.close()
-        print(dataAccountNamedLogs)
 
         # product log output goes here
 
@@ -128,6 +116,7 @@ def index():
                                dataAccountNamedLogs=dataAccountNamedLogs, dataProductNamedLogs=dataProductNamedLogs)
     else:
 
+        # Donat chart meta data about workers
         today = datetime.today()
         cur = con.cursor()
         cur.execute(
@@ -138,8 +127,6 @@ def index():
         cur.execute("SELECT  year, SUM(workeramount) FROM tohumschema.data GROUP BY year ORDER BY year")
         maxData = cur.fetchall()
 
-        print(maxData)
-
         maxYear = today.year
         maxVal = 0
         lastYear = today.year - 1
@@ -147,23 +134,90 @@ def index():
             if i[1] > maxVal:
                 maxYear = i[0]
                 maxVal = i[1]
-            if i[0] == 2019:
+            if i[0] == lastYear:
                 lastYear = i
 
         percentDiff = format((maxVal - data[0]) / data[0] * 100, '.2f')
 
         lastPercentDiff = format((lastYear[1] - data[0]) / data[0] * 100, '.2f')
 
-        print(maxYear, maxVal, percentDiff)
-        print(lastYear)
-
         cur.execute("SELECT  year, SUM(workeramount) FROM tohumschema.data GROUP BY year")
         dataAll = cur.fetchall()
         con.commit()
         cur.close()
 
-        return render_template('index.html', data="F", chartData=data, dataAll=dataAll, maxYear=maxYear, maxVal=maxVal,
-                               percentDiff=percentDiff, lastPercentDiff=lastPercentDiff)
+        # Line chart data about hectare distiribution
+
+        cur = con.cursor()
+        cur.execute("SELECT year, SUM(area) FROM tohumschema.productdata GROUP BY year;")
+        dataArea = cur.fetchall()
+        con.commit()
+        cur.close()
+
+        maxArea = 0
+        minArea = 99999
+        averageArea = 0
+        for i in dataArea:
+            averageArea += i[1]
+            if i[1] > maxArea:
+                maxArea = i[1]
+            if i[1] < minArea:
+                minArea = i[1]
+
+        averageArea = float(format(averageArea / len(dataArea), '.2f'))
+
+        maxAreaPercent = format((maxArea - averageArea) / averageArea * 100, '.2f')
+        minAreaPercent = format((minArea - averageArea) / averageArea * 100, '.2f')
+
+        # Bar chart about
+
+        cur = con.cursor()
+        cur.execute(
+            "SELECT d.name, COUNT(dt.productid) FROM tohumschema.productdata dt, tohumschema.product d WHERE d.productid = dt.productid GROUP BY d.name;")
+        dataProductString = cur.fetchall()
+        con.commit()
+        cur.close()
+
+        maxProduct = 0
+        maxProductLabel = ""
+
+        minProduct = 999999
+        minProductLabel = ""
+
+        for i in dataProductString:
+            if i[1] > maxProduct:
+                maxProduct = i[1]
+                maxProductLabel = i[0]
+            if i[1] < minProduct:
+                minProduct = i[1]
+                minProductLabel = i[0]
+
+        # account log output goes here
+
+        cur = con.cursor()
+        cur.execute(
+            "SELECT f.name, s.opertype, s.logdatetime FROM tohumschema.systemlog s, tohumschema.farmer f  WHERE ((s.opertype = '1' or s.opertype = '2' or s.opertype = '3' or s.opertype = '4' or s.opertype = '5') and f.farmerid = s.farmerid)  ORDER BY s.logdatetime DESC;")
+        dataAccountNamedLogs = cur.fetchall()
+        con.commit()
+        cur.close()
+
+        # product log output goes here
+
+        cur = con.cursor()
+        cur.execute(
+            "SELECT f.name, f.mail,s.opertype, s.logdatetime FROM tohumschema.systemlog s, tohumschema.farmer f  WHERE ((opertype = '4' or opertype = '5') and f.farmerid = s.farmerid) ORDER BY logdatetime DESC;")
+        dataProductNamedLogs = cur.fetchall()
+        con.commit()
+        cur.close()
+
+        return render_template('index.html', data="T", chartData=data, dataAll=dataAll, maxYear=maxYear, maxVal=maxVal,
+                               percentDiff=percentDiff, lastPercentDiff=lastPercentDiff, lastYearData=lastYear,
+                               dataArea=dataArea, minArea=minArea, maxArea=maxArea, averageArea=averageArea,
+                               maxAreaPercent=maxAreaPercent, minAreaPercent=minAreaPercent,
+                               dataProductString=dataProductString, maxProduct=maxProduct,
+                               maxProductLabel=maxProductLabel
+                               , minProductLabel=minProductLabel, minProduct=minProduct,
+                               dataAccountNamedLogs=dataAccountNamedLogs, dataProductNamedLogs=dataProductNamedLogs)
 
 
 @app.route('/admin', methods=["POST", "GET"])
