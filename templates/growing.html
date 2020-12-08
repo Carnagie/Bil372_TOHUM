@@ -211,40 +211,63 @@
 
         
         <div class="innerData" style="width: 80%;margin: 10%;">
-            <form method="post" action="#">    
+            <form method="post" action="#">  
+
             <ul class="popupList" style="list-style-type: none;">
                 <li>
-                    <h2>Progress</h2>
+                    <h3>Progress</h3>
                     <div class="progress progress-sm" style="height:3px">
                         <div class="progress-bar" role="progressbar" id="progress-bar2" style="width: 20%" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                 </li>
 
                 <li>
-                    <h2>Name</h2>
-                    <input type="text" id="harvestName" name="harvestName" class="form-control form-control-lg" placeholder="##" required="">        
+                    <h3>Name</h3>
+                    <input type="text" id="harvestName" name="harvestName" class="form-control" placeholder="##" required="">        
                 </li>
 
                 <li>
-                    <h2>Area</h2>
-                    <input type="number" id="harvestArea" name="harvestArea" class="form-control form-control-lg" placeholder="#" required="">        
+                    <h3>Area</h3>
+                    <input type="number" id="harvestArea" name="harvestArea" class="form-control" placeholder="#" required="">        
                 </li>
 
                 <li>
-                    <h2>Seed Date</h2>
-                    <input type="text" id="harvestSeedDate" name="harvestSeedDate" class="form-control form-control-lg" placeholder="#" required="">        
+                    <h3>Ton</h3>
+                    <input type="number" id="harvestTon" name="harvestTon" class="form-control" placeholder="0" required>        
                 </li>
 
                 <li>
-                    <h2>Harvest Date</h2>
-                    <input type="text" id="harvestHarvestDate" name="harvestHarvestDate" class="form-control form-control-lg" placeholder="#">        
+                    <h3>Worker Amount</h3>
+                    <input type="number" id="harvestTon" name="harvestWorker" class="form-control" placeholder="0" required>        
                 </li>
 
                 <li>
-                    <button class="btn btn-lg btn-primary btn-block" type="submit">Harvest</button>
+                    <h3>Machine Amount</h3>
+                    <input type="number" id="harvestTon" name="harvestMachine" class="form-control" placeholder="0" required>        
+                </li>
+
+                <li>
+                    <h3>Medicine Amount</h3>
+                    <input type="number" id="harvestTon" name="harvestMedicine" class="form-control" placeholder="0" required>        
+                </li>
+
+                <li>
+                    <h3>Seed Date</h3>
+                    <input type="text" id="harvestSeedDate" name="harvestSeedDate" class="form-control" placeholder="#" required="">        
+                </li>
+
+                <li>
+                    <h3>Harvest Date</h3>
+                    <input type="text" id="harvestHarvestDate" name="harvestHarvestDate" class="form-control" placeholder="#">        
+                </li>
+
+                <li>
+                    <button class="btn btn-lg btn-primary btn-block" type="submit" name="action" value="harvest">Harvest</button>
                 </li>
                           
             </ul>
+
+
 
 
             </form>
@@ -308,7 +331,7 @@
                         <br>
                         <div class="col-md-12">
                             <div class="form-group mb-3">
-                                <input type="submit" id="submit-btn" name="submit-btn" value="Add" class="btn btn-primary w-100">
+                                <input type="submit" id="submit-btn" name="action" value="Add" class="btn btn-primary w-100">
                             </div>
                         </div>
                     </form>

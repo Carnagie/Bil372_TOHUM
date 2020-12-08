@@ -868,24 +868,86 @@ def growings():
         return redirect(url_for("login"))
     else:
         if request.method == "POST":
-            name = request.form["name"]
-            area = request.form["area"]
-            start_date = request.form["seedDate"]
-            end_date = request.form["harvestDate"]
-            cur = con.cursor()
-            cur.execute("select productid from tohumschema.product where name='{}'".format(name))
-            productid = cur.fetchone()[0]
-            cur.execute(
-                "INSERT INTO tohumschema.growing (farmerid, productid, area, seeddate, harvestdate, status) VALUES ({}, {}, {}, TIMESTAMP '{}',TIMESTAMP '{}', 'waiting')".format(
-                    session.get("id", None), productid, area, start_date, end_date))
-            con.commit()
-            cur.execute(
-                "select p.name, g.area, g.seeddate, g.harvestdate from tohumschema.product as p, tohumschema.growing as g where p.productid=g.productid and g.farmerid={} group by p.name, g.area, g.seeddate, g.harvestdate, p.productid".format(
-                    session.get("id", None)))
-            x = cur.fetchall()
-            percents = percent_calculator(x)
-            cur.close()
-            return render_template("growing.html", data=zip(x, percents))
+
+            if request.form["action"] == "Add":
+                name = request.form["name"]
+                area = request.form["area"]
+                start_date = request.form["seedDate"]
+                end_date = request.form["harvestDate"]
+                cur = con.cursor()
+                cur.execute("select productid from tohumschema.product where name='{}'".format(name))
+                productid = cur.fetchone()[0]
+                cur.execute(
+                    "INSERT INTO tohumschema.growing (farmerid, productid, area, seeddate, harvestdate, status) VALUES ({}, {}, {}, TIMESTAMP '{}',TIMESTAMP '{}', 'waiting')".format(
+                        session.get("id", None), productid, area, start_date, end_date))
+                con.commit()
+                cur.execute(
+                    "select p.name, g.area, g.seeddate, g.harvestdate from tohumschema.product as p, tohumschema.growing as g where p.productid=g.productid and g.farmerid={} group by p.name, g.area, g.seeddate, g.harvestdate, p.productid".format(
+                        session.get("id", None)))
+                x = cur.fetchall()
+                percents = percent_calculator(x)
+                cur.close()
+                return render_template("growing.html", data=zip(x, percents))
+            elif request.form["action"] == "harvest":
+
+                name = request.form["harvestName"]
+                area = request.form["harvestArea"]
+                ton  = request.form["harvestTon"]
+                worker   = request.form["harvestWorker"]
+                machine  = request.form["harvestMachine"]
+                medicine = request.form["harvestMedicine"]
+                start_date = request.form["harvestSeedDate"]
+                end_date = request.form["harvestHarvestDate"]
+                year = end_date.split("-")[0]
+
+
+                cur2 = con.cursor()
+                cur2.execute(
+                    "INSERT INTO tohumschema.data  (farmerid, medicineamount,machineamount,workeramount,year) VALUES ( {} ,{}, {}, {},{});".format(
+                        session["id"], medicine, machine, worker, year))
+                con.commit()
+                cur2.close()
+                cur3 = con.cursor()
+                cur3.execute("SELECT d.dataid FROM tohumschema.data d ORDER BY d.dataid DESC LIMIT 1")
+                did = cur3.fetchone()[0]
+
+                print(did)
+
+                cur3.execute(
+                    "INSERT INTO tohumschema.productdata ( dataid, productid, farmerid, area, ton, year ) VALUES({},(SELECT productid FROM tohumschema.product WHERE name = '{}'),{},{},{},{})".format(
+                        did, name, session["id"], area, ton, year))
+                con.commit()
+                
+                cur3.execute(
+                    "DELETE FROM tohumschema.growing WHERE farmerid = {} AND productid = (SELECT productid FROM tohumschema.product WHERE name = '{}') AND area = {} AND seeddate =  TIMESTAMP '{}'".format(
+                        session["id"], name, area, start_date))
+                con.commit()
+
+                cur = con.cursor()
+                cur.execute("SELECT productid FROM tohumschema.product WHERE name = '{}'".format(name))
+                productId = cur.fetchone()[0]
+                cur.close()
+
+                cur2 = con.cursor()
+                cur2.execute(
+                    "INSERT INTO tohumschema.systemlog ( farmerid, opertype, logdatetime )  VALUES ( {}, 5, TIMESTAMP '{}' ) ".format(
+                        session["id"], datetime.today()))
+                con.commit()
+                cur2.close()
+
+
+                cur = con.cursor()
+                cur.execute(
+                    "select p.name, g.area, g.seeddate, g.harvestdate, g.status from tohumschema.product as p, tohumschema.growing as g where p.productid=g.productid and g.farmerid={} group by p.name, g.area, g.seeddate, g.harvestdate, g.status, p.productid".format(
+                        session.get("id", None)))
+                x = cur.fetchall()
+                percents = percent_calculator(x)
+                cur.close()
+                return render_template("growing.html", data=zip(x, percents))
+
+
+
+
         else:
             cur = con.cursor()
             cur.execute(
