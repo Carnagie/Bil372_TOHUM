@@ -12,6 +12,8 @@ con = psycopg2.connect(host="localhost", port="9999", database="tohumdb", user="
 def index():
     if "admin" in session or "user" in session:
 
+
+        #Donat chart meta data about workers
         today = datetime.today()
         cur = con.cursor()
         cur.execute(
@@ -31,7 +33,7 @@ def index():
             if i[1] > maxVal:
                 maxYear = i[0]
                 maxVal = i[1]
-            if i[0] == 2019:
+            if i[0] == lastYear:
                 lastYear = i
 
         percentDiff = format((maxVal - data[0]) / data[0] * 100, '.2f')
@@ -46,8 +48,123 @@ def index():
         con.commit()
         cur.close()
 
+
+
+        #Line chart data about hectare distiribution
+        cur = con.cursor()
+        cur.execute("SELECT year, SUM(area) FROM tohumschema.productdata GROUP BY year;")
+        dataArea = cur.fetchall()
+        con.commit()
+        cur.close()
+
+        maxArea = 0
+        minArea = 99999
+        averageArea = 0
+        for i in dataArea:
+            averageArea += i[1]
+            if i[1] > maxArea:
+                maxArea = i[1]
+            if i[1] < minArea:
+                minArea = i[1]
+
+        averageArea = float(format(averageArea / len(dataArea), '.2f'))
+        print(dataArea)
+
+        maxAreaPercent = format((maxArea - averageArea) / averageArea * 100, '.2f')
+        minAreaPercent = format((minArea - averageArea) / averageArea * 100, '.2f')
+        
+
+        #Bar chart about 
+        cur = con.cursor()
+        cur.execute("SELECT productid, COUNT(productid) FROM tohumschema.productdata GROUP BY productid;")
+        dataProduct = cur.fetchall()
+        con.commit()
+        cur.close()
+
+        dataProductString = list()
+
+        for i in dataProduct:
+            if i[0] == None:
+                dataProduct.remove(i)
+
+        for i in dataProduct:
+            cur = con.cursor()
+            cur.execute( "SELECT productid, name FROM tohumschema.product WHERE productid = {};".format(str(i[0])))
+            stringProduct = cur.fetchall()
+            dataProductString.append( (stringProduct[0][1], i[1]))
+            con.commit()
+            cur.close()
+
+        print(dataProductString)
+
+        maxProduct = 0
+        maxProductLabel = ""
+
+        minProduct = 999999
+        minProductLabel = ""
+
+        for i in dataProductString:
+            if i[1] > maxProduct:
+                maxProduct = i[1]
+                maxProductLabel = i[0]
+            if i[1] < minProduct:
+                minProduct = i[1]
+                minProductLabel = i[0]
+
+
+        # account log output goes here
+
+        cur = con.cursor()
+        cur.execute("SELECT farmerid, opertype, logdatetime FROM tohumschema.systemlog WHERE opertype = '1' or opertype = '2' or opertype = '3' or opertype = '4' or opertype = '5' ORDER BY logdatetime DESC;")
+        dataAccountLogs = cur.fetchall()
+        con.commit()
+        cur.close()
+        print(dataAccountLogs)
+
+        dataAccountNamedLogs = list()
+
+        for i in dataAccountLogs:
+            cur = con.cursor()
+            cur.execute("SELECT farmerid, name FROM tohumschema.farmer WHERE farmerid = {};".format(i[0]))
+            tempFarmer = cur.fetchall()
+            dataAccountNamedLogs.append([tempFarmer[0][1], i[1], i[2]])
+            con.commit()
+            cur.close()
+        print(dataAccountNamedLogs)
+
+
+        # product log output goes here
+
+        cur = con.cursor()
+        cur.execute("SELECT farmerid, opertype, logdatetime FROM tohumschema.systemlog WHERE opertype = '4' or opertype = '5' ORDER BY logdatetime DESC;")
+        dataProductLogs = cur.fetchall()
+        con.commit()
+        cur.close()
+        print(dataProductLogs)
+
+        dataProductNamedLogs = list()
+
+        for i in dataProductLogs:
+            cur = con.cursor()
+            cur.execute("SELECT farmerid, name, mail FROM tohumschema.farmer WHERE farmerid = {};".format(i[0]))
+            tempFarmer = cur.fetchall()
+            print("--------", tempFarmer)
+            dataProductNamedLogs.append([tempFarmer[0][1], tempFarmer[0][2], i[1], i[2]])
+            con.commit()
+            cur.close()
+        print(dataProductNamedLogs)
+
+
+
+
+
+
+        
+
         return render_template('index.html', data="T", chartData=data, dataAll=dataAll, maxYear=maxYear, maxVal=maxVal,
-                               percentDiff=percentDiff, lastPercentDiff=lastPercentDiff)
+                               percentDiff=percentDiff, lastPercentDiff=lastPercentDiff, lastYearData=lastYear, dataArea=dataArea,minArea=minArea,maxArea=maxArea,averageArea=averageArea,
+                               maxAreaPercent=maxAreaPercent, minAreaPercent=minAreaPercent,dataProductString=dataProductString,maxProduct=maxProduct,maxProductLabel=maxProductLabel
+                               ,minProductLabel=minProductLabel,minProduct=minProduct, dataAccountNamedLogs=dataAccountNamedLogs, dataProductNamedLogs=dataProductNamedLogs)
     else:
 
         today = datetime.today()
@@ -132,6 +249,14 @@ def login():
             if email == "admin@admin.com" and password == "admin":
                 session["admin"] = "admin"
                 session["id"] = 1
+                
+                cur = con.cursor()
+                cur.execute("INSERT INTO tohumschema.systemlog ( farmerid, opertype, logdatetime )  VALUES ( {}, 1, TIMESTAMP '{}' ) ".format(session["id"], datetime.today() ) )
+                con.commit()
+                cur.close()
+                
+
+
                 return redirect(url_for("admin"))
 
             if truePassword == None:
@@ -141,6 +266,15 @@ def login():
                 if password == truePassword.__str__():
                     session["user"] = "user"
                     session["id"] = id
+
+                    cur = con.cursor()
+                    cur.execute("INSERT INTO tohumschema.systemlog ( farmerid, opertype, logdatetime )  VALUES ( {}, 1, TIMESTAMP '{}' ) ".format(session["id"], datetime.today() ) )
+                    con.commit()
+                    cur.close()
+
+
+
+
                     return redirect(url_for("user"))
                 else:
                     return redirect(url_for("login"))
@@ -171,8 +305,6 @@ def register():
         email = request.form["email"]
         first_name = request.form["firstname"]
         last_name = request.form["lastname"]
-        country = request.form["country"]
-        region = request.form["region"]
         city = request.form["city"]
         for i in cities:
             if city == i[2]:
@@ -195,6 +327,17 @@ def register():
             cur.execute("SELECT farmerid from tohumschema.farmer where mail='{}'".format(email))
             farmerID = cur.fetchone()[0]
             con.commit()
+
+
+            cur2 = con.cursor()
+            cur2.execute("INSERT INTO tohumschema.systemlog ( farmerid, opertype, logdatetime )  VALUES ( {}, 2, TIMESTAMP '{}' ) ".format(farmerID, datetime.today() ) )
+            con.commit()
+            cur2.close()
+
+
+
+
+
         cur.close()
 
         return redirect(url_for("register"))
@@ -257,6 +400,7 @@ def fruits():
             except:
                 print("no fetch")
             cur.close()
+
 
             return render_template('fruits.html', data=data)
 
@@ -613,6 +757,13 @@ def adddata():
             latest = cur3.fetchall()
             cur3.close()
 
+
+            cur2 = con.cursor()
+            cur2.execute("INSERT INTO tohumschema.systemlog ( farmerid, opertype, logdatetime )  VALUES ( {}, 4, TIMESTAMP '{}' ) ".format(session["id"], datetime.today() ) )
+            con.commit()
+            cur2.close()
+
+
             return render_template('adddata.html', data=latest)
         else:
             return render_template('adddata.html', data=latest1)
@@ -689,6 +840,15 @@ def settings():
                     cur.execute(
                         "update tohumschema.farmer set password = '{}' where farmerid = {}".format(new_password, x)
                     )
+
+
+                    cur2 = con.cursor()
+                    cur2.execute("INSERT INTO tohumschema.systemlog ( farmerid, opertype, logdatetime )  VALUES ( {}, 3, TIMESTAMP '{}' ) ".format(session["id"], datetime.today() ) )
+                    con.commit()
+                    cur2.close()
+
+
+
                     return redirect(url_for("settings"))
 
         else:
