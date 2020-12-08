@@ -12,10 +12,10 @@ Tarım ve Çevre ile alakalı paylaşılan, açık veya kapalı kaynaklardan eld
 
 
 ## Geliştiriciler
-- Ahmet Bahadır Eyüboğlu
-- Arda Ekinci
-- Ekrem Sönmezer
-- Mustafa Bora Arslan
+- [Ahmet Bahadır Eyüboğlu](https://github.com/Carnagie)
+- [Arda Ekinci](https://github.com/arda-ekinci)
+- [Ekrem Sönmezer](https://github.com/sonmezerekrem)
+- [Mustafa Bora Arslan](https://github.com/arslanmustafabora)
 
 ## Platform ve Diller
 - Python
@@ -24,9 +24,6 @@ Tarım ve Çevre ile alakalı paylaşılan, açık veya kapalı kaynaklardan eld
 - Bootstrap
 - jQuery
 
-## Açıklamalar
-
-
 
 ## Veritabanı Şeması
 
@@ -34,7 +31,8 @@ Tarım ve Çevre ile alakalı paylaşılan, açık veya kapalı kaynaklardan eld
 
 ## Giriş ve Şifre Bilgileri
 
-
+- Email: admin@admin.com Şifre: admin (admin hesabı)
+- Email: sule@gmail.com Şifre:sulehizli (kullanıcı hesabı)
 
 ## Gitstats
 
