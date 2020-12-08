@@ -1,7 +1,8 @@
 from flask import Flask, render_template, url_for, redirect, request, session, flash
 import psycopg2
 import datetime
-from datetime import datetime
+from datetime import datetime, date
+
 app = Flask(__name__)
 app.secret_key = "hello"
 con = psycopg2.connect(host="localhost", port="9999", database="tohumdb", user="super", password="whqrnr&6mxAj7")
@@ -11,7 +12,8 @@ con = psycopg2.connect(host="localhost", port="9999", database="tohumdb", user="
 def index():
     if "admin" in session or "user" in session:
 
-        #Donat chart meta data about workers
+        # Donat chart meta data about workers
+        # Donat chart meta data about workers
         today = datetime.today()
         cur = con.cursor()
         cur.execute(
@@ -21,6 +23,8 @@ def index():
         cur = con.cursor()
         cur.execute("SELECT  year, SUM(workeramount) FROM tohumschema.data GROUP BY year ORDER BY year")
         maxData = cur.fetchall()
+
+        print(maxData)
 
         maxYear = today.year
         maxVal = 0
@@ -36,14 +40,17 @@ def index():
 
         lastPercentDiff = format((lastYear[1] - data[0]) / data[0] * 100, '.2f')
 
+        print(maxYear, maxVal, percentDiff)
+        print(lastYear)
+
         cur.execute("SELECT  year, SUM(workeramount) FROM tohumschema.data GROUP BY year")
         dataAll = cur.fetchall()
         con.commit()
         cur.close()
 
+        # Line chart data about hectare distiribution
 
-
-        #Line chart data about hectare distiribution
+        # Line chart data about hectare distiribution
 
         cur = con.cursor()
         cur.execute("SELECT year, SUM(area) FROM tohumschema.productdata GROUP BY year;")
@@ -66,15 +73,17 @@ def index():
 
         maxAreaPercent = format((maxArea - averageArea) / averageArea * 100, '.2f')
         minAreaPercent = format((minArea - averageArea) / averageArea * 100, '.2f')
-        
 
-        #Bar chart about 
+        # Bar chart about
 
         cur = con.cursor()
-        cur.execute("SELECT d.name, COUNT(dt.productid) FROM tohumschema.productdata dt, tohumschema.product d WHERE d.productid = dt.productid GROUP BY d.name;")
+        cur.execute(
+            "SELECT d.name, COUNT(dt.productid) FROM tohumschema.productdata dt, tohumschema.product d WHERE d.productid = dt.productid GROUP BY d.name;")
         dataProductString = cur.fetchall()
         con.commit()
         cur.close()
+
+        print(dataProductString)
 
         maxProduct = 0
         maxProductLabel = ""
@@ -90,34 +99,35 @@ def index():
                 minProduct = i[1]
                 minProductLabel = i[0]
 
-
-
-
         # account log output goes here
 
         cur = con.cursor()
-        cur.execute("SELECT f.name, s.opertype, s.logdatetime FROM tohumschema.systemlog s, tohumschema.farmer f  WHERE ((s.opertype = '1' or s.opertype = '2' or s.opertype = '3' or s.opertype = '4' or s.opertype = '5') and f.farmerid = s.farmerid)  ORDER BY s.logdatetime DESC;")
+        cur.execute(
+            "SELECT f.name, s.opertype, s.logdatetime FROM tohumschema.systemlog s, tohumschema.farmer f  WHERE ((s.opertype = '1' or s.opertype = '2' or s.opertype = '3' or s.opertype = '4' or s.opertype = '5') and f.farmerid = s.farmerid)  ORDER BY s.logdatetime DESC;")
         dataAccountNamedLogs = cur.fetchall()
         con.commit()
         cur.close()
         print(dataAccountNamedLogs)
 
-
         # product log output goes here
 
         cur = con.cursor()
-        cur.execute("SELECT f.name, f.mail,s.opertype, s.logdatetime FROM tohumschema.systemlog s, tohumschema.farmer f  WHERE ((opertype = '4' or opertype = '5') and f.farmerid = s.farmerid) ORDER BY logdatetime DESC;")
+        cur.execute(
+            "SELECT f.name, f.mail,s.opertype, s.logdatetime FROM tohumschema.systemlog s, tohumschema.farmer f  WHERE ((opertype = '4' or opertype = '5') and f.farmerid = s.farmerid) ORDER BY logdatetime DESC;")
         dataProductNamedLogs = cur.fetchall()
         con.commit()
         cur.close()
 
         return render_template('index.html', data="T", chartData=data, dataAll=dataAll, maxYear=maxYear, maxVal=maxVal,
-                               percentDiff=percentDiff, lastPercentDiff=lastPercentDiff, lastYearData=lastYear, dataArea=dataArea,minArea=minArea,maxArea=maxArea,averageArea=averageArea,
-                               maxAreaPercent=maxAreaPercent, minAreaPercent=minAreaPercent,dataProductString=dataProductString,maxProduct=maxProduct,maxProductLabel=maxProductLabel
-                               ,minProductLabel=minProductLabel,minProduct=minProduct, dataAccountNamedLogs=dataAccountNamedLogs, dataProductNamedLogs=dataProductNamedLogs)
+                               percentDiff=percentDiff, lastPercentDiff=lastPercentDiff, lastYearData=lastYear,
+                               dataArea=dataArea, minArea=minArea, maxArea=maxArea, averageArea=averageArea,
+                               maxAreaPercent=maxAreaPercent, minAreaPercent=minAreaPercent,
+                               dataProductString=dataProductString, maxProduct=maxProduct,
+                               maxProductLabel=maxProductLabel
+                               , minProductLabel=minProductLabel, minProduct=minProduct,
+                               dataAccountNamedLogs=dataAccountNamedLogs, dataProductNamedLogs=dataProductNamedLogs)
     else:
 
-        #Donat chart meta data about workers
         today = datetime.today()
         cur = con.cursor()
         cur.execute(
@@ -128,6 +138,8 @@ def index():
         cur.execute("SELECT  year, SUM(workeramount) FROM tohumschema.data GROUP BY year ORDER BY year")
         maxData = cur.fetchall()
 
+        print(maxData)
+
         maxYear = today.year
         maxVal = 0
         lastYear = today.year - 1
@@ -135,92 +147,23 @@ def index():
             if i[1] > maxVal:
                 maxYear = i[0]
                 maxVal = i[1]
-            if i[0] == lastYear:
+            if i[0] == 2019:
                 lastYear = i
 
         percentDiff = format((maxVal - data[0]) / data[0] * 100, '.2f')
 
         lastPercentDiff = format((lastYear[1] - data[0]) / data[0] * 100, '.2f')
 
+        print(maxYear, maxVal, percentDiff)
+        print(lastYear)
+
         cur.execute("SELECT  year, SUM(workeramount) FROM tohumschema.data GROUP BY year")
         dataAll = cur.fetchall()
         con.commit()
         cur.close()
 
-
-
-        #Line chart data about hectare distiribution
-
-        cur = con.cursor()
-        cur.execute("SELECT year, SUM(area) FROM tohumschema.productdata GROUP BY year;")
-        dataArea = cur.fetchall()
-        con.commit()
-        cur.close()
-
-        maxArea = 0
-        minArea = 99999
-        averageArea = 0
-        for i in dataArea:
-            averageArea += i[1]
-            if i[1] > maxArea:
-                maxArea = i[1]
-            if i[1] < minArea:
-                minArea = i[1]
-
-        averageArea = float(format(averageArea / len(dataArea), '.2f'))
-        print(dataArea)
-
-        maxAreaPercent = format((maxArea - averageArea) / averageArea * 100, '.2f')
-        minAreaPercent = format((minArea - averageArea) / averageArea * 100, '.2f')
-        
-
-        #Bar chart about 
-
-        cur = con.cursor()
-        cur.execute("SELECT d.name, COUNT(dt.productid) FROM tohumschema.productdata dt, tohumschema.product d WHERE d.productid = dt.productid GROUP BY d.name;")
-        dataProductString = cur.fetchall()
-        con.commit()
-        cur.close()
-
-        maxProduct = 0
-        maxProductLabel = ""
-
-        minProduct = 999999
-        minProductLabel = ""
-
-        for i in dataProductString:
-            if i[1] > maxProduct:
-                maxProduct = i[1]
-                maxProductLabel = i[0]
-            if i[1] < minProduct:
-                minProduct = i[1]
-                minProductLabel = i[0]
-
-
-
-
-        # account log output goes here
-
-        cur = con.cursor()
-        cur.execute("SELECT f.name, s.opertype, s.logdatetime FROM tohumschema.systemlog s, tohumschema.farmer f  WHERE ((s.opertype = '1' or s.opertype = '2' or s.opertype = '3' or s.opertype = '4' or s.opertype = '5') and f.farmerid = s.farmerid)  ORDER BY s.logdatetime DESC;")
-        dataAccountNamedLogs = cur.fetchall()
-        con.commit()
-        cur.close()
-        print(dataAccountNamedLogs)
-
-
-        # product log output goes here
-
-        cur = con.cursor()
-        cur.execute("SELECT f.name, f.mail,s.opertype, s.logdatetime FROM tohumschema.systemlog s, tohumschema.farmer f  WHERE ((opertype = '4' or opertype = '5') and f.farmerid = s.farmerid) ORDER BY logdatetime DESC;")
-        dataProductNamedLogs = cur.fetchall()
-        con.commit()
-        cur.close()
-
-        return render_template('index.html', data="T", chartData=data, dataAll=dataAll, maxYear=maxYear, maxVal=maxVal,
-                               percentDiff=percentDiff, lastPercentDiff=lastPercentDiff, lastYearData=lastYear, dataArea=dataArea,minArea=minArea,maxArea=maxArea,averageArea=averageArea,
-                               maxAreaPercent=maxAreaPercent, minAreaPercent=minAreaPercent,dataProductString=dataProductString,maxProduct=maxProduct,maxProductLabel=maxProductLabel
-                               ,minProductLabel=minProductLabel,minProduct=minProduct, dataAccountNamedLogs=dataAccountNamedLogs, dataProductNamedLogs=dataProductNamedLogs)
+        return render_template('index.html', data="F", chartData=data, dataAll=dataAll, maxYear=maxYear, maxVal=maxVal,
+                               percentDiff=percentDiff, lastPercentDiff=lastPercentDiff)
 
 
 @app.route('/admin', methods=["POST", "GET"])
@@ -267,13 +210,13 @@ def login():
             if email == "admin@admin.com" and password == "admin":
                 session["admin"] = "admin"
                 session["id"] = 1
-                
+
                 cur = con.cursor()
-                cur.execute("INSERT INTO tohumschema.systemlog ( farmerid, opertype, logdatetime )  VALUES ( {}, 1, TIMESTAMP '{}' ) ".format(session["id"], datetime.today() ) )
+                cur.execute(
+                    "INSERT INTO tohumschema.systemlog ( farmerid, opertype, logdatetime )  VALUES ( {}, 1, TIMESTAMP '{}' ) ".format(
+                        session["id"], datetime.today()))
                 con.commit()
                 cur.close()
-                
-
 
                 return redirect(url_for("admin"))
 
@@ -286,12 +229,11 @@ def login():
                     session["id"] = id
 
                     cur = con.cursor()
-                    cur.execute("INSERT INTO tohumschema.systemlog ( farmerid, opertype, logdatetime )  VALUES ( {}, 1, TIMESTAMP '{}' ) ".format(session["id"], datetime.today() ) )
+                    cur.execute(
+                        "INSERT INTO tohumschema.systemlog ( farmerid, opertype, logdatetime )  VALUES ( {}, 1, TIMESTAMP '{}' ) ".format(
+                            session["id"], datetime.today()))
                     con.commit()
                     cur.close()
-
-
-
 
                     return redirect(url_for("user"))
                 else:
@@ -346,15 +288,12 @@ def register():
             farmerID = cur.fetchone()[0]
             con.commit()
 
-
             cur2 = con.cursor()
-            cur2.execute("INSERT INTO tohumschema.systemlog ( farmerid, opertype, logdatetime )  VALUES ( {}, 2, TIMESTAMP '{}' ) ".format(farmerID, datetime.today() ) )
+            cur2.execute(
+                "INSERT INTO tohumschema.systemlog ( farmerid, opertype, logdatetime )  VALUES ( {}, 2, TIMESTAMP '{}' ) ".format(
+                    farmerID, datetime.today()))
             con.commit()
             cur2.close()
-
-
-
-
 
         cur.close()
 
@@ -418,7 +357,6 @@ def fruits():
             except:
                 print("no fetch")
             cur.close()
-
 
             return render_template('fruits.html', data=data)
 
@@ -775,12 +713,12 @@ def adddata():
             latest = cur3.fetchall()
             cur3.close()
 
-
             cur2 = con.cursor()
-            cur2.execute("INSERT INTO tohumschema.systemlog ( farmerid, opertype, logdatetime )  VALUES ( {}, 4, TIMESTAMP '{}' ) ".format(session["id"], datetime.today() ) )
+            cur2.execute(
+                "INSERT INTO tohumschema.systemlog ( farmerid, opertype, logdatetime )  VALUES ( {}, 4, TIMESTAMP '{}' ) ".format(
+                    session["id"], datetime.today()))
             con.commit()
             cur2.close()
-
 
             return render_template('adddata.html', data=latest)
         else:
@@ -859,13 +797,12 @@ def settings():
                         "update tohumschema.farmer set password = '{}' where farmerid = {}".format(new_password, x)
                     )
 
-
                     cur2 = con.cursor()
-                    cur2.execute("INSERT INTO tohumschema.systemlog ( farmerid, opertype, logdatetime )  VALUES ( {}, 3, TIMESTAMP '{}' ) ".format(session["id"], datetime.today() ) )
+                    cur2.execute(
+                        "INSERT INTO tohumschema.systemlog ( farmerid, opertype, logdatetime )  VALUES ( {}, 3, TIMESTAMP '{}' ) ".format(
+                            session["id"], datetime.today()))
                     con.commit()
                     cur2.close()
-
-
 
                     return redirect(url_for("settings"))
 
@@ -897,9 +834,43 @@ def growings():
             start_date = request.form["seedDate"]
             end_date = request.form["harvestDate"]
             print(name, area, start_date, end_date)
-            return redirect(url_for("growings"))
+            cur = con.cursor()
+            cur.execute(
+                "select p.name, g.area, g.seeddate, g.harvestdate from tohumschema.product as p, tohumschema.growing as g where p.productid=g.productid and g.farmerid={} group by p.name, g.area, g.seeddate, g.harvestdate, p.productid".format(
+                    session.get("id", None)))
+            x = cur.fetchall()
+            percents = percent_calculator(x)
+            cur.close()
+            return render_template("growing.html", data=zip(x, percents))
         else:
-            return render_template("growing.html")
+            cur = con.cursor()
+            cur.execute(
+                "select p.name, g.area, g.seeddate, g.harvestdate, g.status from tohumschema.product as p, tohumschema.growing as g where p.productid=g.productid and g.farmerid={} group by p.name, g.area, g.seeddate, g.harvestdate, g.status, p.productid".format(
+                    session.get("id", None)))
+            x = cur.fetchall()
+            print(x)
+            percents = percent_calculator(x)
+            print(percents)
+            cur.close()
+            return render_template("growing.html", data=zip(x, percents))
+
+
+def percent_calculator(x):
+    data = [(row[2], row[3]) for row in x]
+    percents = list()
+    for row in data:
+        start = row[0]
+        end = row[1]
+        start = start.strftime("%Y-%m-%d").split(sep="-")
+        end = end.strftime("%Y-%m-%d").split(sep="-")
+        end_date = date(int(end[0]), int(end[1]), int(end[2]))
+        start_date = date(int(start[0]), int(start[1]), int(start[2]))
+        today = date.today()
+        total_diff = end_date - start_date
+        today_diff = end_date - today
+        percent = 100 - ((100 * today_diff.days) / total_diff.days)
+        percents.append(percent)
+    return percents
 
 
 @app.errorhandler(404)
