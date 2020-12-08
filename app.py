@@ -112,13 +112,59 @@ def index():
                 minProductLabel = i[0]
 
 
+        # account log output goes here
+
+        cur = con.cursor()
+        cur.execute("SELECT farmerid, opertype, logdatetime FROM tohumschema.systemlog WHERE opertype = '1' or opertype = '2' or opertype = '3' ORDER BY logdatetime DESC;")
+        dataAccountLogs = cur.fetchall()
+        con.commit()
+        cur.close()
+        print(dataAccountLogs)
+
+        dataAccountNamedLogs = list()
+
+        for i in dataAccountLogs:
+            cur = con.cursor()
+            cur.execute("SELECT farmerid, name FROM tohumschema.farmer WHERE farmerid = {};".format(i[0]))
+            tempFarmer = cur.fetchall()
+            dataAccountNamedLogs.append([tempFarmer[0][1], i[1], i[2]])
+            con.commit()
+            cur.close()
+        print(dataAccountNamedLogs)
+
+
+        # product log output goes here
+
+        cur = con.cursor()
+        cur.execute("SELECT farmerid, opertype, logdatetime FROM tohumschema.systemlog WHERE opertype = '4' or opertype = '5' ORDER BY logdatetime DESC;")
+        dataProductLogs = cur.fetchall()
+        con.commit()
+        cur.close()
+        print(dataProductLogs)
+
+        dataProductNamedLogs = list()
+
+        for i in dataProductLogs:
+            cur = con.cursor()
+            cur.execute("SELECT farmerid, name, mail FROM tohumschema.farmer WHERE farmerid = {};".format(i[0]))
+            tempFarmer = cur.fetchall()
+            print("--------", tempFarmer)
+            dataProductNamedLogs.append([tempFarmer[0][1], tempFarmer[0][2], i[1], i[2]])
+            con.commit()
+            cur.close()
+        print(dataProductNamedLogs)
+
+
+
+
+
 
         
 
         return render_template('index.html', data="T", chartData=data, dataAll=dataAll, maxYear=maxYear, maxVal=maxVal,
                                percentDiff=percentDiff, lastPercentDiff=lastPercentDiff, lastYearData=lastYear, dataArea=dataArea,minArea=minArea,maxArea=maxArea,averageArea=averageArea,
                                maxAreaPercent=maxAreaPercent, minAreaPercent=minAreaPercent,dataProductString=dataProductString,maxProduct=maxProduct,maxProductLabel=maxProductLabel
-                               ,minProductLabel=minProductLabel,minProduct=minProduct)
+                               ,minProductLabel=minProductLabel,minProduct=minProduct, dataAccountNamedLogs=dataAccountNamedLogs, dataProductNamedLogs=dataProductNamedLogs)
     else:
 
         today = datetime.today()
