@@ -34,6 +34,12 @@ Tarım ve Çevre ile alakalı paylaşılan, açık veya kapalı kaynaklardan eld
 - Email: admin@admin.com Şifre: admin (admin hesabı)
 - Email: sule@gmail.com Şifre:sulehizli (kullanıcı hesabı)
 
+## SSH Tüneli ve Veritabanı Bağlantısı
+- Terminalden tüneli açın;
+- ssh -o "ServerAliveInterval 60" -4 -L 9999:Tohum-1871.postgres.pythonanywhere-services.com:11871 Tohum@ssh.pythonanywhere.com
+- ssh tünelin şifresi: whqrnr&6mxAj7
+- tünel açıldıktan sonra uygulamayı başlatabilirsiniz.
+
 ## Gitstats
 
 [Gitstats Ana Sayfa](/gitstats/index.html)
